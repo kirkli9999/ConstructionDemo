@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
-  <title>鄉林建設 - 管理儀表板</title>
+  <title>寰宇建設 - 管理儀表板</title>
   <link rel="stylesheet" href="css/styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-sankey"></script>
@@ -11,8 +11,8 @@
 <body>
   <!-- Desktop Sidebar -->
   <aside class="sidebar">
-    <h1 class="sidebar-brand">SHINING GROUP</h1>
-    <p class="sidebar-subtitle">鄉林建設管理系統</p>
+    <h1 class="sidebar-brand">UNIVERSE GROUP</h1>
+    <p class="sidebar-subtitle">寰宇建設管理系統</p>
     <nav class="sidebar-nav">
       <button class="nav-btn active" data-page="summary">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -39,7 +39,7 @@
 
   <!-- Mobile Top Header -->
   <header class="mobile-header">
-    <div class="mobile-brand">鄉林建設 管理儀表板</div>
+    <div class="mobile-brand">寰宇建設 管理儀表板</div>
     <nav class="mobile-tabs">
       <button class="tab-btn active" data-page="summary">財務總覽</button>
       <button class="tab-btn" data-page="lifecycle">生命週期</button>
@@ -92,11 +92,20 @@
         </div>
       </div>
 
+      <!-- SLA Internal Pricing Breakdown -->
+      <div class="card sla-card" style="margin-bottom:0.75rem">
+        <h4 class="card-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          內部服務定價 SLA（基本維護費 + 加值服務費）
+        </h4>
+        <div class="sla-grid" id="slaGrid"></div>
+      </div>
+
       <div class="chart-stack">
         <div class="card">
           <h4 class="card-title">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-            利潤中心 P&amp;L（按建案）
+            利潤中心 P&amp;L（按建案，含 SLA 分攤）
           </h4>
           <div class="chart-container"><canvas id="chartProfitCenter"></canvas></div>
         </div>
@@ -130,7 +139,7 @@
             <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#EAB308" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           </div>
           <h4 class="alert-title">2026 資金回籠預警</h4>
-          <p class="alert-desc">「鄉林中山賦」已進入預售末期，預計 Q3 貢獻回籠資金 15.8 億。</p>
+          <p class="alert-desc">「寰宇中山賦」已進入預售末期，預計 Q3 貢獻回籠資金 15.8 億。</p>
           <div class="alert-details">
             <div class="alert-detail-item">
               <span class="alert-detail-label">預計回籠</span>
@@ -297,6 +306,7 @@
                 <th class="text-right">成交金額 (萬)</th>
                 <th class="text-right">原始獎金 (萬)</th>
                 <th class="text-right">庫齡加權</th>
+                <th class="text-right">懲處乘數</th>
               </tr>
             </thead>
             <tbody id="bonusTableBody"></tbody>

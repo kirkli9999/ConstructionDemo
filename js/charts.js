@@ -1,5 +1,5 @@
 /**
- * 鄉林建設管理儀表板 - 圖表模組
+ * 寰宇建設管理儀表板 - 圖表模組
  * Chart.js based chart rendering - Mobile-friendly
  */
 
@@ -56,6 +56,12 @@ function renderProfitCenterChart() {
           backgroundColor: CHART_COLORS.green,
           borderRadius: 4,
         },
+        {
+          label: 'SLA 分攤 (百萬)',
+          data: MOCK_DATA.profitCenters.map(d => (d.slaBase || 0) + (d.slaValue || 0)),
+          backgroundColor: '#f97316',
+          borderRadius: 4,
+        },
       ],
     },
     options: {
@@ -72,7 +78,8 @@ function renderProfitCenterChart() {
             afterBody: function (items) {
               var idx = items[0].dataIndex;
               var pc = MOCK_DATA.profitCenters[idx];
-              return '毛利率: ' + pc.margin + '%\n類型: ' + pc.type + '\n地區: ' + pc.region;
+              return '毛利率: ' + pc.margin + '%\n類型: ' + pc.type + '\n地區: ' + pc.region +
+                '\nSLA 維護費: $' + (pc.slaBase || 0) + 'M / 加值: $' + (pc.slaValue || 0) + 'M';
             },
           },
         },

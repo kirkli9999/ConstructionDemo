@@ -1,6 +1,6 @@
 /**
- * 鄉林建設管理儀表板 - 模擬資料 (Mock Data)
- * Shining Group Construction Dashboard - 2026
+ * 寰宇建設管理儀表板 - 模擬資料 (Mock Data)
+ * Universe Group Construction Dashboard - 2026
  */
 
 const MOCK_DATA = {
@@ -12,12 +12,24 @@ const MOCK_DATA = {
     { name: '品牌溢價率', value: '115%', change: '+2.0%', status: 'up' },
   ],
 
-  // 利潤中心（按建案）
+  // 利潤中心（按建案）- 含 SLA 內部服務定價分攤
   profitCenters: [
-    { name: '台北中山賦', region: '北部', revenue: 1200, profit: 360, margin: 30, type: '高端住宅' },
-    { name: '台中雲峰', region: '中部', revenue: 850, profit: 212, margin: 25, type: '飯店住宅' },
-    { name: '成都涵碧天下', region: '大陸', revenue: 1500, profit: 450, margin: 30, type: '複合式' },
-    { name: '員林案', region: '中部', revenue: 400, profit: 80, margin: 20, type: '住宅' },
+    { name: '台北中山賦', region: '北部', revenue: 1200, profit: 360, margin: 30, type: '高端住宅', slaBase: 18, slaValue: 12 },
+    { name: '台中雲峰', region: '中部', revenue: 850, profit: 212, margin: 25, type: '飯店住宅', slaBase: 13, slaValue: 8 },
+    { name: '成都涵碧天下', region: '大陸', revenue: 1500, profit: 450, margin: 30, type: '複合式', slaBase: 22, slaValue: 18 },
+    { name: '員林案', region: '中部', revenue: 400, profit: 80, margin: 20, type: '住宅', slaBase: 6, slaValue: 3 },
+  ],
+
+  // 內部服務定價 SLA 後勤部門
+  slaDepartments: [
+    { dept: '人資部', type: '基本維護', desc: '薪資發放、勞健保', rate: '固定月費', amount: 15 },
+    { dept: '人資部', type: '加值服務', desc: '專案人才招聘', rate: '按件計價', amount: 8 },
+    { dept: '財務部', type: '基本維護', desc: '帳務處理、稅務申報', rate: '固定月費', amount: 12 },
+    { dept: '財務部', type: '加值服務', desc: '投資分析、資金調度', rate: '按件計價', amount: 15 },
+    { dept: '法務部', type: '基本維護', desc: '合約範本維護', rate: '固定月費', amount: 8 },
+    { dept: '法務部', type: '加值服務', desc: '合約審查、訴訟處理', rate: '按件計價', amount: 10 },
+    { dept: '資訊部', type: '基本維護', desc: '系統維運、資安管理', rate: '固定月費', amount: 10 },
+    { dept: '資訊部', type: '加值服務', desc: '客製開發、BI 報表', rate: '按件計價', amount: 6 },
   ],
 
   // 建案生命週期
@@ -147,44 +159,52 @@ const MOCK_DATA = {
     { level: 4, label: '頂尖', multiplier: 1.15, threshold: 20000 },
   ],
 
+  // 庫齡懲處乘數：成屋超過12個月後，每月 -0.01x，最低 0.85x
+  agingPenalty: {
+    startMonth: 12,     // 成屋後第12個月開始懲處
+    ratePerMonth: 0.01, // 每月扣減
+    floor: 0.85,        // 最低乘數下限
+  },
+
   // 業務員獎金資料（含新舊案明細）
+  // agingMonths: 該案成屋後已經過幾個月（0=新案或尚未成屋）
   bonusSales: [
     {
       id: 'zhang', name: '張曉明', satisfaction: 4.8,
       deals: [
-        { project: '台北中山賦', type: '新案', date: '2026/01/15', amount: 4800, bonus: 144, aging: 0 },
-        { project: '台北中山賦', type: '新案', date: '2026/02/20', amount: 5200, bonus: 156, aging: 0 },
-        { project: '台中雲峰',   type: '舊案', date: '2026/01/28', amount: 3200, bonus: 96,  aging: 2.5 },
-        { project: '成都涵碧天下', type: '新案', date: '2026/03/05', amount: 3800, bonus: 114, aging: 0 },
-        { project: '員林案',     type: '舊案', date: '2026/02/10', amount: 1800, bonus: 54,  aging: 3.2 },
+        { project: '台北中山賦', type: '新案', date: '2026/01/15', amount: 4800, bonus: 144, aging: 0, agingMonths: 0 },
+        { project: '台北中山賦', type: '新案', date: '2026/02/20', amount: 5200, bonus: 156, aging: 0, agingMonths: 0 },
+        { project: '台中雲峰',   type: '舊案', date: '2026/01/28', amount: 3200, bonus: 96,  aging: 2.5, agingMonths: 18 },
+        { project: '成都涵碧天下', type: '新案', date: '2026/03/05', amount: 3800, bonus: 114, aging: 0, agingMonths: 0 },
+        { project: '員林案',     type: '舊案', date: '2026/02/10', amount: 1800, bonus: 54,  aging: 3.2, agingMonths: 26 },
       ],
     },
     {
       id: 'li', name: '李佩嘉', satisfaction: 4.9,
       deals: [
-        { project: '台北中山賦', type: '新案', date: '2026/01/20', amount: 5100, bonus: 153, aging: 0 },
-        { project: '成都涵碧天下', type: '新案', date: '2026/02/15', amount: 4200, bonus: 126, aging: 0 },
-        { project: '台中雲峰',   type: '舊案', date: '2026/03/01', amount: 2800, bonus: 84,  aging: 1.8 },
-        { project: '台北中山賦', type: '新案', date: '2026/03/08', amount: 3600, bonus: 108, aging: 0 },
+        { project: '台北中山賦', type: '新案', date: '2026/01/20', amount: 5100, bonus: 153, aging: 0, agingMonths: 0 },
+        { project: '成都涵碧天下', type: '新案', date: '2026/02/15', amount: 4200, bonus: 126, aging: 0, agingMonths: 0 },
+        { project: '台中雲峰',   type: '舊案', date: '2026/03/01', amount: 2800, bonus: 84,  aging: 1.8, agingMonths: 10 },
+        { project: '台北中山賦', type: '新案', date: '2026/03/08', amount: 3600, bonus: 108, aging: 0, agingMonths: 0 },
       ],
     },
     {
       id: 'wang', name: '王大同', satisfaction: 4.5,
       deals: [
-        { project: '台中雲峰',   type: '新案', date: '2026/01/10', amount: 3500, bonus: 105, aging: 0 },
-        { project: '員林案',     type: '舊案', date: '2026/01/25', amount: 2200, bonus: 66,  aging: 3.5 },
-        { project: '台中雲峰',   type: '新案', date: '2026/02/18', amount: 4100, bonus: 123, aging: 0 },
-        { project: '員林案',     type: '舊案', date: '2026/03/02', amount: 1600, bonus: 48,  aging: 4.1 },
-        { project: '成都涵碧天下', type: '新案', date: '2026/03/09', amount: 2800, bonus: 84,  aging: 0 },
+        { project: '台中雲峰',   type: '新案', date: '2026/01/10', amount: 3500, bonus: 105, aging: 0, agingMonths: 0 },
+        { project: '員林案',     type: '舊案', date: '2026/01/25', amount: 2200, bonus: 66,  aging: 3.5, agingMonths: 30 },
+        { project: '台中雲峰',   type: '新案', date: '2026/02/18', amount: 4100, bonus: 123, aging: 0, agingMonths: 0 },
+        { project: '員林案',     type: '舊案', date: '2026/03/02', amount: 1600, bonus: 48,  aging: 4.1, agingMonths: 38 },
+        { project: '成都涵碧天下', type: '新案', date: '2026/03/09', amount: 2800, bonus: 84,  aging: 0, agingMonths: 0 },
       ],
     },
     {
       id: 'lin', name: '林小春', satisfaction: 4.7,
       deals: [
-        { project: '員林案',     type: '舊案', date: '2026/01/12', amount: 1900, bonus: 57,  aging: 3.8 },
-        { project: '成都涵碧天下', type: '新案', date: '2026/02/05', amount: 3200, bonus: 96,  aging: 0 },
-        { project: '員林案',     type: '舊案', date: '2026/02/22', amount: 1500, bonus: 45,  aging: 4.0 },
-        { project: '台中雲峰',   type: '新案', date: '2026/03/06', amount: 2900, bonus: 87,  aging: 0 },
+        { project: '員林案',     type: '舊案', date: '2026/01/12', amount: 1900, bonus: 57,  aging: 3.8, agingMonths: 34 },
+        { project: '成都涵碧天下', type: '新案', date: '2026/02/05', amount: 3200, bonus: 96,  aging: 0, agingMonths: 0 },
+        { project: '員林案',     type: '舊案', date: '2026/02/22', amount: 1500, bonus: 45,  aging: 4.0, agingMonths: 36 },
+        { project: '台中雲峰',   type: '新案', date: '2026/03/06', amount: 2900, bonus: 87,  aging: 0, agingMonths: 0 },
       ],
     },
   ],

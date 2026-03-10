@@ -1,5 +1,5 @@
 /**
- * 鄉林建設管理儀表板 - 主程式
+ * 寰宇建設管理儀表板 - 主程式
  * Navigation, page rendering, and initialization
  */
 
@@ -51,6 +51,7 @@
         case 'summary':
           renderProfitCenterChart();
           renderRegionChart();
+          renderSlaGrid();
           break;
         case 'lifecycle':
           renderInventoryChart();
@@ -180,30 +181,89 @@
     });
   }
 
+  // --- SLA Grid Rendering ---
+  function renderSlaGrid() {
+    var container = document.getElementById('slaGrid');
+    if (!container) return;
+
+    var depts = MOCK_DATA.slaDepartments;
+    if (!depts) return;
+
+    // Group by department
+    var grouped = {};
+    depts.forEach(function (s) {
+      if (!grouped[s.dept]) grouped[s.dept] = [];
+      grouped[s.dept].push(s);
+    });
+
+    var html = '';
+    Object.keys(grouped).forEach(function (dept) {
+      var items = grouped[dept];
+      var baseItem = items.find(function (i) { return i.type === '基本維護'; });
+      var valueItem = items.find(function (i) { return i.type === '加值服務'; });
+
+      html += '<div class="sla-dept-card">' +
+        '<div class="sla-dept-name">' + dept + '</div>' +
+        '<div class="sla-items">';
+
+      if (baseItem) {
+        html += '<div class="sla-item base">' +
+          '<span class="sla-type-badge base">維護</span>' +
+          '<span class="sla-desc">' + baseItem.desc + '</span>' +
+          '<span class="sla-amount">$' + baseItem.amount + 'M/月</span>' +
+        '</div>';
+      }
+      if (valueItem) {
+        html += '<div class="sla-item value">' +
+          '<span class="sla-type-badge value">加值</span>' +
+          '<span class="sla-desc">' + valueItem.desc + '</span>' +
+          '<span class="sla-amount">$' + valueItem.amount + 'M</span>' +
+        '</div>';
+      }
+
+      html += '</div></div>';
+    });
+
+    container.innerHTML = html;
+  }
+
+  // --- Bonus Page: Aging Penalty helper ---
+  function calcAgingPenalty(agingMonths) {
+    var penalty = MOCK_DATA.agingPenalty;
+    if (!penalty || !agingMonths || agingMonths <= penalty.startMonth) return 1.0;
+    var monthsOver = agingMonths - penalty.startMonth;
+    var multiplier = 1.0 - (monthsOver * penalty.ratePerMonth);
+    return Math.max(multiplier, penalty.floor);
+  }
+
   // --- Bonus Page: Calculation helpers ---
   function calcBonusForPerson(person) {
     var tiers = MOCK_DATA.bonusTiers;
     var totalVolume = 0;
     var weightedVolume = 0;
     var totalBaseBonus = 0;
+    var totalPenaltyAdjusted = 0;
     var newVolume = 0;
     var oldVolume = 0;
 
     person.deals.forEach(function (d) {
       totalVolume += d.amount;
       totalBaseBonus += d.bonus;
+
+      // Aging penalty: reduce bonus for old inventory
+      var penaltyMult = calcAgingPenalty(d.agingMonths || 0);
+      totalPenaltyAdjusted += Math.round(d.bonus * penaltyMult);
+
       if (d.type === '新案') {
         newVolume += d.amount;
       } else {
         oldVolume += d.amount;
-        // 3年以上舊案，總額以1.2倍計入
+        // 3年以上舊案，總額以1.2倍計入（獎勵去化）
         var weight = d.aging >= 3 ? 1.2 : 1.0;
         weightedVolume += d.amount * weight;
       }
     });
 
-    // Weighted total = new案原額 + 舊案加權額
-    var effectiveVolume = newVolume + weightedVolume + (oldVolume - oldVolume); // keep raw for display
     // For tier calculation, use weighted volume
     var tierVolume = newVolume + weightedVolume;
 
@@ -216,7 +276,8 @@
       }
     }
 
-    var finalBonus = Math.round(totalBaseBonus * currentTier.multiplier);
+    // Final bonus = penalty-adjusted base * tier multiplier
+    var finalBonus = Math.round(totalPenaltyAdjusted * currentTier.multiplier);
 
     // Next tier gap
     var nextTier = null;
@@ -235,6 +296,7 @@
       newVolume: newVolume,
       oldVolume: oldVolume,
       totalBaseBonus: totalBaseBonus,
+      totalPenaltyAdjusted: totalPenaltyAdjusted,
       currentTier: currentTier,
       finalBonus: finalBonus,
       nextTier: nextTier,
@@ -310,6 +372,9 @@
 
     tbody.innerHTML = person.deals.map(function (d) {
       var weight = d.aging >= 3 ? '1.2x' : (d.type === '舊案' ? '1.0x' : '-');
+      var penalty = calcAgingPenalty(d.agingMonths || 0);
+      var penaltyStr = penalty < 1.0 ? penalty.toFixed(2) + 'x' : '-';
+      var penaltyClass = penalty < 0.9 ? ' style="color:#ef4444;font-weight:700"' : (penalty < 1.0 ? ' style="color:#f97316"' : '');
       var typeClass = d.type === '新案' ? 'new-deal' : 'old-deal';
       return '<tr>' +
         '<td>' + d.project + '</td>' +
@@ -318,6 +383,7 @@
         '<td class="text-right">' + d.amount.toLocaleString() + '</td>' +
         '<td class="text-right">' + d.bonus.toLocaleString() + '</td>' +
         '<td class="text-right">' + weight + '</td>' +
+        '<td class="text-right"' + penaltyClass + '>' + penaltyStr + '</td>' +
       '</tr>';
     }).join('');
   }
@@ -329,6 +395,8 @@
     container.innerHTML = person.deals.map(function (d) {
       var typeClass = d.type === '新案' ? 'new-deal' : 'old-deal';
       var weight = d.aging >= 3 ? '1.2x' : (d.type === '舊案' ? '1.0x' : '-');
+      var penalty = calcAgingPenalty(d.agingMonths || 0);
+      var penaltyStr = penalty < 1.0 ? penalty.toFixed(2) + 'x' : '-';
       return '<div class="bonus-deal-item">' +
         '<div class="bonus-deal-top">' +
           '<span class="bonus-deal-project">' + d.project + '</span>' +
@@ -344,8 +412,8 @@
             '<div class="bonus-deal-stat-value">' + d.bonus + '萬</div>' +
           '</div>' +
           '<div class="bonus-deal-stat">' +
-            '<div class="bonus-deal-stat-label">庫齡加權</div>' +
-            '<div class="bonus-deal-stat-value">' + weight + '</div>' +
+            '<div class="bonus-deal-stat-label">懲處</div>' +
+            '<div class="bonus-deal-stat-value" style="' + (penalty < 1.0 ? 'color:#ef4444' : '') + '">' + penaltyStr + '</div>' +
           '</div>' +
         '</div>' +
       '</div>';

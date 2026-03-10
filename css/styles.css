@@ -225,6 +225,45 @@ body {
 }
 .stars { color: var(--yellow-500); }
 
+/* ========== SLA Internal Pricing Grid ========== */
+.sla-card { border-left: 3px solid var(--blue-600); }
+.sla-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+.sla-dept-card {
+  background: var(--slate-50);
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.625rem;
+}
+.sla-dept-name {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--slate-700);
+  margin-bottom: 0.375rem;
+}
+.sla-items { display: flex; flex-direction: column; gap: 0.25rem; }
+.sla-item {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.65rem;
+  color: var(--slate-600);
+}
+.sla-type-badge {
+  display: inline-block;
+  padding: 0.05rem 0.3rem;
+  border-radius: 999px;
+  font-size: 0.55rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.sla-type-badge.base { background: var(--blue-50); color: var(--blue-600); }
+.sla-type-badge.value { background: var(--green-100); color: #16a34a; }
+.sla-desc { flex: 1; }
+.sla-amount { font-weight: 700; white-space: nowrap; color: var(--slate-800); }
+
 /* ========== Filter / Dropdown (Management page) ========== */
 .filter-card {
   display: flex; align-items: center; gap: 0.75rem;
@@ -439,6 +478,9 @@ body {
   .card { padding: 0.75rem; }
   .card-title { font-size: 0.8rem; margin-bottom: 0.625rem; }
   .chart-stack { gap: 0.625rem; margin-top: 0.625rem; }
+
+  /* SLA */
+  .sla-grid { grid-template-columns: repeat(2, 1fr); }
 
   /* Lifecycle */
   .stage-header { font-size: 0.75rem; }
