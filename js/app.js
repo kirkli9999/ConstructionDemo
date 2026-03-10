@@ -65,6 +65,7 @@
           renderCostSankeyChart();
           renderAssistantSankeyChart();
           break;
+      }
     });
   }
 
