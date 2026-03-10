@@ -23,13 +23,8 @@
 
   // --- Page Navigation ---
   function switchPage(pageName) {
-    // Update desktop sidebar nav buttons
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.page === pageName);
-    });
-
-    // Update mobile bottom nav buttons
-    document.querySelectorAll('.bottom-nav-btn').forEach(btn => {
+    // Update all nav buttons (sidebar + mobile tabs)
+    document.querySelectorAll('[data-page]').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.page === pageName);
     });
 
@@ -159,13 +154,8 @@
 
   // --- Initialize ---
   function init() {
-    // Setup desktop sidebar navigation
-    document.querySelectorAll('.nav-btn').forEach(function (btn) {
-      btn.addEventListener('click', function () { switchPage(btn.dataset.page); });
-    });
-
-    // Setup mobile bottom tab navigation
-    document.querySelectorAll('.bottom-nav-btn').forEach(function (btn) {
+    // Setup all navigation buttons (sidebar + mobile tabs)
+    document.querySelectorAll('[data-page]').forEach(function (btn) {
       btn.addEventListener('click', function () { switchPage(btn.dataset.page); });
     });
 

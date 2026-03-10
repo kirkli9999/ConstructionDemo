@@ -2,16 +2,15 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
   <title>鄉林建設 - 管理儀表板</title>
   <link rel="stylesheet" href="css/styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@0.344.0/font/lucide.min.css">
 </head>
 <body>
   <div class="app">
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
+    <!-- Desktop Sidebar -->
+    <aside class="sidebar">
       <h1 class="sidebar-brand">SHINING GROUP</h1>
       <p class="sidebar-subtitle">鄉林建設管理系統</p>
       <nav class="sidebar-nav">
@@ -20,7 +19,7 @@
           財務與利潤中心
         </button>
         <button class="nav-btn" data-page="lifecycle">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7-6H4a2 2 0 0 0-2 2z"/><path d="M14 2v6h6"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           建案生命週期
         </button>
         <button class="nav-btn" data-page="sales">
@@ -30,23 +29,15 @@
       </nav>
     </aside>
 
-    <!-- Bottom Tab Navigation (Mobile) -->
-    <nav class="bottom-nav" id="bottomNav">
-      <div class="bottom-nav-inner">
-        <button class="bottom-nav-btn active" data-page="summary">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-          <span>財務總覽</span>
-        </button>
-        <button class="bottom-nav-btn" data-page="lifecycle">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <span>生命週期</span>
-        </button>
-        <button class="bottom-nav-btn" data-page="sales">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          <span>業務考核</span>
-        </button>
+    <!-- Mobile Top Header -->
+    <header class="mobile-header">
+      <div class="mobile-brand">SHINING GROUP</div>
+      <div class="mobile-tabs">
+        <button class="tab-btn active" data-page="summary">財務總覽</button>
+        <button class="tab-btn" data-page="lifecycle">生命週期</button>
+        <button class="tab-btn" data-page="sales">業務考核</button>
       </div>
-    </nav>
+    </header>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -95,7 +86,7 @@
           <div class="card">
             <h4 class="card-title">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-              利潤中心 P&L（按建案）
+              利潤中心 P&amp;L（按建案）
             </h4>
             <div class="chart-container"><canvas id="chartProfitCenter"></canvas></div>
           </div>
@@ -116,9 +107,7 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             建案生命週期進度與成本偏差
           </h4>
-          <div class="lifecycle-stages" id="lifecycleStages">
-            <!-- Filled by JS -->
-          </div>
+          <div class="lifecycle-stages" id="lifecycleStages"></div>
         </div>
 
         <div class="chart-grid">
@@ -128,7 +117,7 @@
           </div>
           <div class="card alert-card">
             <div class="alert-icon">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#EAB308" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#EAB308" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             </div>
             <h4 class="alert-title">2026 資金回籠預警</h4>
             <p class="alert-desc">「鄉林中山賦」已進入預售末期，預計 Q3 貢獻回籠資金 15.8 億。</p>
@@ -172,19 +161,13 @@
                   <th class="text-right">客戶滿意度</th>
                 </tr>
               </thead>
-              <tbody id="salesTableBody">
-                <!-- Filled by JS -->
-              </tbody>
+              <tbody id="salesTableBody"></tbody>
             </table>
           </div>
-
-          <!-- Mobile: Card-based sales view -->
-          <div class="sales-cards" id="salesCards">
-            <!-- Filled by JS -->
-          </div>
+          <div class="sales-cards" id="salesCards"></div>
         </div>
 
-        <div class="chart-grid" style="margin-top: 1.5rem;">
+        <div class="chart-grid">
           <div class="card">
             <h4 class="card-title">業務成交量 vs ROI 散佈圖</h4>
             <div class="chart-container"><canvas id="chartScatter"></canvas></div>
