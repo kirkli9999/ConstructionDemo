@@ -27,11 +27,17 @@
   --sidebar-width: 260px;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans TC', sans-serif;
   background: var(--slate-50);
   color: var(--slate-800);
   line-height: 1.5;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* === Layout === */
@@ -40,7 +46,7 @@ body {
   min-height: 100vh;
 }
 
-/* === Sidebar === */
+/* === Sidebar (Desktop) === */
 .sidebar {
   width: var(--sidebar-width);
   background: var(--slate-900);
@@ -102,19 +108,57 @@ body {
   flex-shrink: 0;
 }
 
-/* === Mobile Menu === */
-.mobile-menu-btn {
+/* === Mobile Bottom Tab Bar === */
+.bottom-nav {
   display: none;
   position: fixed;
-  top: 1rem;
-  left: 1rem;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid var(--slate-200);
   z-index: 200;
-  background: var(--slate-900);
-  color: white;
+  padding: 0;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.bottom-nav-inner {
+  display: flex;
+}
+
+.bottom-nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.6rem 0.25rem;
   border: none;
-  border-radius: 0.5rem;
-  padding: 0.5rem;
+  background: transparent;
+  color: var(--slate-400);
+  font-size: 0.625rem;
   cursor: pointer;
+  transition: color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bottom-nav-btn.active {
+  color: var(--blue-600);
+}
+
+.bottom-nav-btn svg {
+  width: 22px;
+  height: 22px;
+}
+
+.bottom-nav-btn span {
+  white-space: nowrap;
+}
+
+/* === Mobile Hamburger (hidden - replaced by bottom nav) === */
+.mobile-menu-btn {
+  display: none;
 }
 
 /* === Main Content === */
@@ -123,6 +167,7 @@ body {
   margin-left: var(--sidebar-width);
   padding: 2rem;
   overflow-y: auto;
+  min-width: 0;
 }
 
 /* === Page Header === */
@@ -132,7 +177,7 @@ body {
   align-items: center;
   margin-bottom: 2rem;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .page-title {
@@ -243,6 +288,7 @@ body {
 }
 
 .card-title svg {
+  flex-shrink: 0;
   color: var(--slate-600);
 }
 
@@ -250,6 +296,18 @@ body {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+/* === Chart Container - Fixed Aspect Ratio === */
+.chart-container {
+  position: relative;
+  width: 100%;
+}
+
+.chart-container canvas {
+  width: 100% !important;
+  height: auto !important;
 }
 
 /* === Lifecycle Progress Bars === */
@@ -268,7 +326,9 @@ body {
 .stage-header {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   font-size: 0.85rem;
+  gap: 0.5rem;
 }
 
 .stage-name {
@@ -283,6 +343,7 @@ body {
   font-size: 0.7rem;
   font-weight: 600;
   margin-left: 0.5rem;
+  white-space: nowrap;
 }
 
 .stage-status.completed {
@@ -308,6 +369,7 @@ body {
 .stage-info {
   color: var(--slate-400);
   font-size: 0.8rem;
+  white-space: nowrap;
 }
 
 .stage-bar-track {
@@ -393,12 +455,14 @@ body {
   color: var(--orange-500);
 }
 
-/* === Data Table === */
+/* === Data Table (Desktop) === */
 .table-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .table-update {
@@ -408,6 +472,7 @@ body {
 
 .table-wrapper {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .data-table {
@@ -445,6 +510,67 @@ body {
   text-align: right;
 }
 
+/* === Mobile Sales Cards (replaces table on mobile) === */
+.sales-cards {
+  display: none;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sales-card-item {
+  background: white;
+  border: 1px solid var(--slate-100);
+  border-radius: 0.75rem;
+  padding: 1rem;
+}
+
+.sales-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.sales-card-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sales-card-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--slate-800);
+}
+
+.sales-card-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.sales-card-stat {
+  text-align: center;
+  padding: 0.5rem;
+  background: var(--slate-50);
+  border-radius: 0.5rem;
+}
+
+.sales-card-stat-label {
+  font-size: 0.65rem;
+  color: var(--slate-400);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sales-card-stat-value {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--slate-800);
+  margin-top: 0.125rem;
+}
+
+/* === Rank Badge === */
 .rank-badge {
   display: inline-flex;
   align-items: center;
@@ -454,6 +580,7 @@ body {
   border-radius: 50%;
   font-weight: 700;
   font-size: 0.8rem;
+  flex-shrink: 0;
 }
 
 .rank-badge.gold {
@@ -495,7 +622,11 @@ body {
   color: var(--yellow-500);
 }
 
-/* === Responsive === */
+/* ====================== */
+/* === Responsive      === */
+/* ====================== */
+
+/* Tablet */
 @media (max-width: 1024px) {
   .kpi-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -505,42 +636,124 @@ body {
   }
 }
 
+/* Mobile */
 @media (max-width: 768px) {
+  /* Hide desktop sidebar */
   .sidebar {
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
+    display: none;
   }
 
-  .sidebar.open {
-    transform: translateX(0);
-  }
-
-  .mobile-menu-btn {
+  /* Show bottom tab navigation */
+  .bottom-nav {
     display: block;
   }
 
+  /* Adjust main content */
   .main-content {
     margin-left: 0;
     padding: 1rem;
-    padding-top: 4rem;
-  }
-
-  .kpi-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .kpi-value {
-    font-size: 1.25rem;
+    padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
   }
 
   .page-header {
     flex-direction: column;
     align-items: flex-start;
+    margin-bottom: 1.25rem;
+  }
+
+  .page-title {
+    font-size: 1.25rem;
+  }
+
+  /* KPI 2-column on mobile */
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.625rem;
+    margin-bottom: 1rem;
+  }
+
+  .kpi-card {
+    padding: 0.875rem;
+  }
+
+  .kpi-value {
+    font-size: 1.35rem;
+  }
+
+  .kpi-label {
+    font-size: 0.7rem;
+  }
+
+  /* Cards */
+  .card {
+    padding: 1rem;
+  }
+
+  .card-title {
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+  }
+
+  .chart-grid {
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  /* Lifecycle stages */
+  .stage-header {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .stage-info {
+    font-size: 0.7rem;
+  }
+
+  /* Sales: show cards, hide table */
+  .table-wrapper {
+    display: none;
+  }
+
+  .sales-cards {
+    display: flex;
+  }
+
+  /* Alert card */
+  .alert-card {
+    padding: 1.25rem;
+  }
+
+  .alert-icon svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  .alert-title {
+    font-size: 1rem;
+  }
+
+  .alert-desc {
+    font-size: 0.8rem;
   }
 }
 
-@media (max-width: 480px) {
+/* Small phones */
+@media (max-width: 380px) {
   .kpi-grid {
     grid-template-columns: 1fr;
+  }
+
+  .kpi-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .kpi-value-row {
+    margin-top: 0;
+  }
+
+  .sales-card-stats {
+    grid-template-columns: 1fr 1fr;
   }
 }

@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>鄉林建設 - 管理儀表板</title>
   <link rel="stylesheet" href="css/styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
@@ -30,10 +30,23 @@
       </nav>
     </aside>
 
-    <!-- Mobile Header -->
-    <button class="mobile-menu-btn" id="mobileMenuBtn">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-    </button>
+    <!-- Bottom Tab Navigation (Mobile) -->
+    <nav class="bottom-nav" id="bottomNav">
+      <div class="bottom-nav-inner">
+        <button class="bottom-nav-btn active" data-page="summary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          <span>財務總覽</span>
+        </button>
+        <button class="bottom-nav-btn" data-page="lifecycle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span>生命週期</span>
+        </button>
+        <button class="bottom-nav-btn" data-page="sales">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>業務考核</span>
+        </button>
+      </div>
+    </nav>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -84,14 +97,14 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
               利潤中心 P&L（按建案）
             </h4>
-            <canvas id="chartProfitCenter" height="300"></canvas>
+            <div class="chart-container"><canvas id="chartProfitCenter"></canvas></div>
           </div>
           <div class="card">
             <h4 class="card-title">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
               地區貢獻佔比
             </h4>
-            <canvas id="chartRegion" height="300"></canvas>
+            <div class="chart-container"><canvas id="chartRegion"></canvas></div>
           </div>
         </div>
       </div>
@@ -111,7 +124,7 @@
         <div class="chart-grid">
           <div class="card">
             <h4 class="card-title">存貨庫齡分佈（去化壓力）</h4>
-            <canvas id="chartInventory" height="250"></canvas>
+            <div class="chart-container"><canvas id="chartInventory"></canvas></div>
           </div>
           <div class="card alert-card">
             <div class="alert-icon">
@@ -164,16 +177,21 @@
               </tbody>
             </table>
           </div>
+
+          <!-- Mobile: Card-based sales view -->
+          <div class="sales-cards" id="salesCards">
+            <!-- Filled by JS -->
+          </div>
         </div>
 
         <div class="chart-grid" style="margin-top: 1.5rem;">
           <div class="card">
             <h4 class="card-title">業務成交量 vs ROI 散佈圖</h4>
-            <canvas id="chartScatter" height="280"></canvas>
+            <div class="chart-container"><canvas id="chartScatter"></canvas></div>
           </div>
           <div class="card">
             <h4 class="card-title">業務員銷售金額排行</h4>
-            <canvas id="chartSalesBar" height="280"></canvas>
+            <div class="chart-container"><canvas id="chartSalesBar"></canvas></div>
           </div>
         </div>
       </div>

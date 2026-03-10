@@ -23,8 +23,13 @@
 
   // --- Page Navigation ---
   function switchPage(pageName) {
-    // Update nav buttons
+    // Update desktop sidebar nav buttons
     document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.page === pageName);
+    });
+
+    // Update mobile bottom nav buttons
+    document.querySelectorAll('.bottom-nav-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.page === pageName);
     });
 
@@ -36,15 +41,14 @@
     // Update title
     document.getElementById('pageTitle').textContent = PAGE_TITLES[pageName] || '';
 
-    // Close mobile sidebar
-    document.getElementById('sidebar').classList.remove('open');
-
     // Render charts for the active page
     renderPageCharts(pageName);
+
+    // Scroll to top on page switch
+    window.scrollTo(0, 0);
   }
 
   function renderPageCharts(pageName) {
-    // Small delay to ensure DOM is visible before rendering charts
     requestAnimationFrame(() => {
       switch (pageName) {
         case 'summary':
@@ -64,87 +68,120 @@
 
   // --- Lifecycle Progress Bars ---
   function renderLifecycleStages() {
-    const container = document.getElementById('lifecycleStages');
+    var container = document.getElementById('lifecycleStages');
     if (!container) return;
 
-    container.innerHTML = MOCK_DATA.lifecycle.map(step => {
-      const statusInfo = STATUS_MAP[step.status] || { label: step.status, css: 'pending' };
-      const barClass = step.status === 'Delayed' ? 'delayed' :
-                       step.status === 'Completed' ? 'completed' : 'normal';
+    container.innerHTML = MOCK_DATA.lifecycle.map(function (step) {
+      var statusInfo = STATUS_MAP[step.status] || { label: step.status, css: 'pending' };
+      var barClass = step.status === 'Delayed' ? 'delayed' :
+                     step.status === 'Completed' ? 'completed' : 'normal';
 
-      return `
-        <div class="stage-item">
-          <div class="stage-header">
-            <span>
-              <span class="stage-name">${step.stage}</span>
-              <span class="stage-status ${statusInfo.css}">${statusInfo.label}</span>
-            </span>
-            <span class="stage-info">進度: ${step.actual}% / 成本: NT$${step.cost}M</span>
-          </div>
-          <div class="stage-bar-track">
-            <div class="stage-bar-fill ${barClass}" style="width: ${step.actual}%"></div>
-          </div>
-        </div>
-      `;
+      return '<div class="stage-item">' +
+        '<div class="stage-header">' +
+          '<span>' +
+            '<span class="stage-name">' + step.stage + '</span>' +
+            '<span class="stage-status ' + statusInfo.css + '">' + statusInfo.label + '</span>' +
+          '</span>' +
+          '<span class="stage-info">進度: ' + step.actual + '% / 成本: NT$' + step.cost + 'M</span>' +
+        '</div>' +
+        '<div class="stage-bar-track">' +
+          '<div class="stage-bar-fill ' + barClass + '" style="width: ' + step.actual + '%"></div>' +
+        '</div>' +
+      '</div>';
     }).join('');
   }
 
-  // --- Sales Table ---
+  // --- Sales Table (Desktop) ---
   function renderSalesTable() {
-    const tbody = document.getElementById('salesTableBody');
+    var tbody = document.getElementById('salesTableBody');
     if (!tbody) return;
 
-    tbody.innerHTML = MOCK_DATA.salesRanks.map((s, idx) => {
-      const rankClass = RANK_CLASSES[idx] || 'normal';
-      const starsHtml = '★'.repeat(Math.floor(s.satisfaction)) +
-                        (s.satisfaction % 1 >= 0.5 ? '½' : '');
+    tbody.innerHTML = MOCK_DATA.salesRanks.map(function (s, idx) {
+      var rankClass = RANK_CLASSES[idx] || 'normal';
 
-      return `
-        <tr>
-          <td><span class="rank-badge ${rankClass}">${idx + 1}</span></td>
-          <td class="sales-name">${s.name}</td>
-          <td class="text-right">${s.deals}</td>
-          <td class="text-right">$${s.volume}M</td>
-          <td class="text-right"><span class="roi-badge">${s.roi}x</span></td>
-          <td class="text-right stars">${starsHtml} ${s.satisfaction}</td>
-        </tr>
-      `;
+      return '<tr>' +
+        '<td><span class="rank-badge ' + rankClass + '">' + (idx + 1) + '</span></td>' +
+        '<td class="sales-name">' + s.name + '</td>' +
+        '<td class="text-right">' + s.deals + '</td>' +
+        '<td class="text-right">$' + s.volume + 'M</td>' +
+        '<td class="text-right"><span class="roi-badge">' + s.roi + 'x</span></td>' +
+        '<td class="text-right stars">★ ' + s.satisfaction + '</td>' +
+      '</tr>';
     }).join('');
   }
 
-  // --- Mobile Menu ---
-  function setupMobileMenu() {
-    const btn = document.getElementById('mobileMenuBtn');
-    const sidebar = document.getElementById('sidebar');
+  // --- Sales Cards (Mobile) ---
+  function renderSalesCards() {
+    var container = document.getElementById('salesCards');
+    if (!container) return;
 
-    btn.addEventListener('click', () => {
-      sidebar.classList.toggle('open');
-    });
+    container.innerHTML = MOCK_DATA.salesRanks.map(function (s, idx) {
+      var rankClass = RANK_CLASSES[idx] || 'normal';
 
-    // Close sidebar when clicking outside
-    document.addEventListener('click', (e) => {
-      if (!sidebar.contains(e.target) && !btn.contains(e.target)) {
-        sidebar.classList.remove('open');
+      return '<div class="sales-card-item">' +
+        '<div class="sales-card-top">' +
+          '<div class="sales-card-name-row">' +
+            '<span class="rank-badge ' + rankClass + '">' + (idx + 1) + '</span>' +
+            '<span class="sales-card-name">' + s.name + '</span>' +
+          '</div>' +
+          '<span class="roi-badge">' + s.roi + 'x ROI</span>' +
+        '</div>' +
+        '<div class="sales-card-stats">' +
+          '<div class="sales-card-stat">' +
+            '<div class="sales-card-stat-label">成交</div>' +
+            '<div class="sales-card-stat-value">' + s.deals + ' 件</div>' +
+          '</div>' +
+          '<div class="sales-card-stat">' +
+            '<div class="sales-card-stat-label">總銷</div>' +
+            '<div class="sales-card-stat-value">$' + s.volume + 'M</div>' +
+          '</div>' +
+          '<div class="sales-card-stat">' +
+            '<div class="sales-card-stat-label">滿意度</div>' +
+            '<div class="sales-card-stat-value stars">★ ' + s.satisfaction + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  // --- Resize Handler: redraw charts on orientation change / resize ---
+  var resizeTimer;
+  function handleResize() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      var activePage = document.querySelector('.page.active');
+      if (activePage) {
+        var pageName = activePage.id.replace('page-', '');
+        renderPageCharts(pageName);
       }
-    });
+    }, 250);
   }
 
   // --- Initialize ---
   function init() {
-    // Setup navigation
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-      btn.addEventListener('click', () => switchPage(btn.dataset.page));
+    // Setup desktop sidebar navigation
+    document.querySelectorAll('.nav-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () { switchPage(btn.dataset.page); });
     });
 
-    // Setup mobile menu
-    setupMobileMenu();
+    // Setup mobile bottom tab navigation
+    document.querySelectorAll('.bottom-nav-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () { switchPage(btn.dataset.page); });
+    });
 
     // Render static content
     renderLifecycleStages();
     renderSalesTable();
+    renderSalesCards();
 
     // Render initial page charts
     renderPageCharts('summary');
+
+    // Listen for resize / orientation changes
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', function () {
+      setTimeout(handleResize, 300);
+    });
   }
 
   // Wait for DOM

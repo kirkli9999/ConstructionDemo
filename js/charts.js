@@ -1,6 +1,6 @@
 /**
  * 鄉林建設管理儀表板 - 圖表模組
- * Chart.js based chart rendering
+ * Chart.js based chart rendering - Mobile-friendly
  */
 
 const CHART_COLORS = {
@@ -22,6 +22,10 @@ function destroyChart(id) {
   }
 }
 
+function isMobile() {
+  return window.innerWidth <= 768;
+}
+
 /**
  * Page 1: 利潤中心柱狀圖
  */
@@ -30,10 +34,15 @@ function renderProfitCenterChart() {
   const ctx = document.getElementById('chartProfitCenter');
   if (!ctx) return;
 
+  const mobile = isMobile();
+  const labels = mobile
+    ? MOCK_DATA.profitCenters.map(d => d.name.length > 4 ? d.name.slice(0, 4) + '..' : d.name)
+    : MOCK_DATA.profitCenters.map(d => d.name);
+
   chartInstances['chartProfitCenter'] = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: MOCK_DATA.profitCenters.map(d => d.name),
+      labels: labels,
       datasets: [
         {
           label: '營收 (百萬)',
@@ -51,22 +60,33 @@ function renderProfitCenterChart() {
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false,
+      maintainAspectRatio: true,
+      aspectRatio: mobile ? 1.2 : 1.8,
       plugins: {
-        legend: { position: 'top' },
+        legend: {
+          position: 'top',
+          labels: { font: { size: mobile ? 10 : 12 }, boxWidth: mobile ? 12 : 40 },
+        },
         tooltip: {
           callbacks: {
             afterBody: function (items) {
-              const idx = items[0].dataIndex;
-              const pc = MOCK_DATA.profitCenters[idx];
-              return `毛利率: ${pc.margin}%\n類型: ${pc.type}\n地區: ${pc.region}`;
+              var idx = items[0].dataIndex;
+              var pc = MOCK_DATA.profitCenters[idx];
+              return '毛利率: ' + pc.margin + '%\n類型: ' + pc.type + '\n地區: ' + pc.region;
             },
           },
         },
       },
       scales: {
-        x: { grid: { display: false } },
-        y: { grid: { color: '#f1f5f9' }, beginAtZero: true },
+        x: {
+          grid: { display: false },
+          ticks: { font: { size: mobile ? 9 : 12 } },
+        },
+        y: {
+          grid: { color: '#f1f5f9' },
+          beginAtZero: true,
+          ticks: { font: { size: mobile ? 9 : 12 } },
+        },
       },
     },
   });
@@ -80,9 +100,11 @@ function renderRegionChart() {
   const ctx = document.getElementById('chartRegion');
   if (!ctx) return;
 
+  const mobile = isMobile();
+
   // Aggregate by region
   const regionMap = {};
-  MOCK_DATA.profitCenters.forEach(pc => {
+  MOCK_DATA.profitCenters.forEach(function (pc) {
     regionMap[pc.region] = (regionMap[pc.region] || 0) + pc.revenue;
   });
 
@@ -103,16 +125,20 @@ function renderRegionChart() {
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false,
-      cutout: '55%',
+      maintainAspectRatio: true,
+      aspectRatio: mobile ? 1.2 : 1.5,
+      cutout: '50%',
       plugins: {
-        legend: { position: 'bottom' },
+        legend: {
+          position: 'bottom',
+          labels: { font: { size: mobile ? 10 : 12 }, padding: mobile ? 10 : 20 },
+        },
         tooltip: {
           callbacks: {
             label: function (ctx) {
-              const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-              const pct = ((ctx.raw / total) * 100).toFixed(1);
-              return `${ctx.label}: NT$${ctx.raw}M (${pct}%)`;
+              var total = ctx.dataset.data.reduce(function (a, b) { return a + b; }, 0);
+              var pct = ((ctx.raw / total) * 100).toFixed(1);
+              return ctx.label + ': NT$' + ctx.raw + 'M (' + pct + '%)';
             },
           },
         },
@@ -129,32 +155,35 @@ function renderInventoryChart() {
   const ctx = document.getElementById('chartInventory');
   if (!ctx) return;
 
+  const mobile = isMobile();
+
   chartInstances['chartInventory'] = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: MOCK_DATA.inventoryAging.map(d => d.range),
+      labels: MOCK_DATA.inventoryAging.map(function (d) { return d.range; }),
       datasets: [{
         label: '佔比 (%)',
-        data: MOCK_DATA.inventoryAging.map(d => d.value),
-        backgroundColor: MOCK_DATA.inventoryAging.map(d => d.color),
+        data: MOCK_DATA.inventoryAging.map(function (d) { return d.value; }),
+        backgroundColor: MOCK_DATA.inventoryAging.map(function (d) { return d.color; }),
         borderRadius: 4,
       }],
     },
     options: {
       indexAxis: 'y',
       responsive: true,
-      maintainAspectRatio: false,
+      maintainAspectRatio: true,
+      aspectRatio: mobile ? 1.3 : 2,
       plugins: {
         legend: { display: false },
         tooltip: {
           callbacks: {
-            label: (ctx) => `${ctx.raw}% 的存貨`,
+            label: function (ctx) { return ctx.raw + '% 的存貨'; },
           },
         },
       },
       scales: {
-        x: { grid: { color: '#f1f5f9' }, beginAtZero: true, max: 60 },
-        y: { grid: { display: false } },
+        x: { grid: { color: '#f1f5f9' }, beginAtZero: true, max: 60, ticks: { font: { size: mobile ? 9 : 12 } } },
+        y: { grid: { display: false }, ticks: { font: { size: mobile ? 10 : 12 } } },
       },
     },
   });
@@ -168,38 +197,44 @@ function renderScatterChart() {
   const ctx = document.getElementById('chartScatter');
   if (!ctx) return;
 
+  const mobile = isMobile();
+
   chartInstances['chartScatter'] = new Chart(ctx, {
     type: 'scatter',
     data: {
       datasets: [{
         label: '業務員',
-        data: MOCK_DATA.salesRanks.map(s => ({ x: s.deals, y: s.roi })),
+        data: MOCK_DATA.salesRanks.map(function (s) { return { x: s.deals, y: s.roi }; }),
         backgroundColor: CHART_COLORS.blue,
-        pointRadius: 10,
-        pointHoverRadius: 14,
+        pointRadius: mobile ? 8 : 10,
+        pointHoverRadius: mobile ? 11 : 14,
       }],
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false,
+      maintainAspectRatio: true,
+      aspectRatio: mobile ? 1.2 : 1.5,
       plugins: {
+        legend: { display: false },
         tooltip: {
           callbacks: {
             label: function (ctx) {
-              const s = MOCK_DATA.salesRanks[ctx.dataIndex];
-              return `${s.name}: ${s.deals} 件, ROI ${s.roi}x`;
+              var s = MOCK_DATA.salesRanks[ctx.dataIndex];
+              return s.name + ': ' + s.deals + ' 件, ROI ' + s.roi + 'x';
             },
           },
         },
       },
       scales: {
         x: {
-          title: { display: true, text: '成交件數' },
+          title: { display: true, text: '成交件數', font: { size: mobile ? 10 : 13 } },
           grid: { color: '#f1f5f9' },
+          ticks: { font: { size: mobile ? 9 : 12 } },
         },
         y: {
-          title: { display: true, text: 'ROI (x)' },
+          title: { display: true, text: 'ROI (x)', font: { size: mobile ? 10 : 13 } },
           grid: { color: '#f1f5f9' },
+          ticks: { font: { size: mobile ? 9 : 12 } },
         },
       },
     },
@@ -214,26 +249,29 @@ function renderSalesBarChart() {
   const ctx = document.getElementById('chartSalesBar');
   if (!ctx) return;
 
+  const mobile = isMobile();
+
   chartInstances['chartSalesBar'] = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: MOCK_DATA.salesRanks.map(s => s.name),
+      labels: MOCK_DATA.salesRanks.map(function (s) { return s.name; }),
       datasets: [{
         label: '總銷金額 (百萬)',
-        data: MOCK_DATA.salesRanks.map(s => s.volume),
+        data: MOCK_DATA.salesRanks.map(function (s) { return s.volume; }),
         backgroundColor: [CHART_COLORS.navy, CHART_COLORS.blue, CHART_COLORS.sky, CHART_COLORS.lightBlue],
         borderRadius: 4,
       }],
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false,
+      maintainAspectRatio: true,
+      aspectRatio: mobile ? 1.2 : 1.5,
       plugins: {
         legend: { display: false },
       },
       scales: {
-        x: { grid: { display: false } },
-        y: { grid: { color: '#f1f5f9' }, beginAtZero: true },
+        x: { grid: { display: false }, ticks: { font: { size: mobile ? 10 : 12 } } },
+        y: { grid: { color: '#f1f5f9' }, beginAtZero: true, ticks: { font: { size: mobile ? 9 : 12 } } },
       },
     },
   });
