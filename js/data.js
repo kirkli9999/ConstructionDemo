@@ -136,4 +136,56 @@ const MOCK_DATA = {
     { from: '林小春', to: '員林案', flow: 20 },
     { from: '林小春', to: '成都涵碧天下', flow: 10 },
   ],
+
+  // ====== 第五頁：獎金制度 ======
+
+  // 階梯乘數門檻定義（全額追溯制）
+  bonusTiers: [
+    { level: 1, label: '達標', multiplier: 1.00, threshold: 0 },
+    { level: 2, label: '優良', multiplier: 1.05, threshold: 10000 },
+    { level: 3, label: '傑出', multiplier: 1.10, threshold: 15000 },
+    { level: 4, label: '頂尖', multiplier: 1.15, threshold: 20000 },
+  ],
+
+  // 業務員獎金資料（含新舊案明細）
+  bonusSales: [
+    {
+      id: 'zhang', name: '張曉明', satisfaction: 4.8,
+      deals: [
+        { project: '台北中山賦', type: '新案', date: '2026/01/15', amount: 4800, bonus: 144, aging: 0 },
+        { project: '台北中山賦', type: '新案', date: '2026/02/20', amount: 5200, bonus: 156, aging: 0 },
+        { project: '台中雲峰',   type: '舊案', date: '2026/01/28', amount: 3200, bonus: 96,  aging: 2.5 },
+        { project: '成都涵碧天下', type: '新案', date: '2026/03/05', amount: 3800, bonus: 114, aging: 0 },
+        { project: '員林案',     type: '舊案', date: '2026/02/10', amount: 1800, bonus: 54,  aging: 3.2 },
+      ],
+    },
+    {
+      id: 'li', name: '李佩嘉', satisfaction: 4.9,
+      deals: [
+        { project: '台北中山賦', type: '新案', date: '2026/01/20', amount: 5100, bonus: 153, aging: 0 },
+        { project: '成都涵碧天下', type: '新案', date: '2026/02/15', amount: 4200, bonus: 126, aging: 0 },
+        { project: '台中雲峰',   type: '舊案', date: '2026/03/01', amount: 2800, bonus: 84,  aging: 1.8 },
+        { project: '台北中山賦', type: '新案', date: '2026/03/08', amount: 3600, bonus: 108, aging: 0 },
+      ],
+    },
+    {
+      id: 'wang', name: '王大同', satisfaction: 4.5,
+      deals: [
+        { project: '台中雲峰',   type: '新案', date: '2026/01/10', amount: 3500, bonus: 105, aging: 0 },
+        { project: '員林案',     type: '舊案', date: '2026/01/25', amount: 2200, bonus: 66,  aging: 3.5 },
+        { project: '台中雲峰',   type: '新案', date: '2026/02/18', amount: 4100, bonus: 123, aging: 0 },
+        { project: '員林案',     type: '舊案', date: '2026/03/02', amount: 1600, bonus: 48,  aging: 4.1 },
+        { project: '成都涵碧天下', type: '新案', date: '2026/03/09', amount: 2800, bonus: 84,  aging: 0 },
+      ],
+    },
+    {
+      id: 'lin', name: '林小春', satisfaction: 4.7,
+      deals: [
+        { project: '員林案',     type: '舊案', date: '2026/01/12', amount: 1900, bonus: 57,  aging: 3.8 },
+        { project: '成都涵碧天下', type: '新案', date: '2026/02/05', amount: 3200, bonus: 96,  aging: 0 },
+        { project: '員林案',     type: '舊案', date: '2026/02/22', amount: 1500, bonus: 45,  aging: 4.0 },
+        { project: '台中雲峰',   type: '新案', date: '2026/03/06', amount: 2900, bonus: 87,  aging: 0 },
+      ],
+    },
+  ],
 };

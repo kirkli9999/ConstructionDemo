@@ -30,6 +30,10 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         管理課題分析
       </button>
+      <button class="nav-btn" data-page="bonus">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        獎金制度
+      </button>
     </nav>
   </aside>
 
@@ -41,6 +45,7 @@
       <button class="tab-btn" data-page="lifecycle">生命週期</button>
       <button class="tab-btn" data-page="sales">業務考核</button>
       <button class="tab-btn" data-page="management">管理課題</button>
+      <button class="tab-btn" data-page="bonus">獎金制度</button>
     </nav>
   </header>
 
@@ -213,6 +218,130 @@
           業助支援網絡（業助 → 業務員 → 建案）
         </h4>
         <div class="sankey-container"><canvas id="chartAssistantSankey"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Page: Bonus System -->
+    <div class="page" id="page-bonus">
+      <!-- Salesperson selector -->
+      <div class="filter-card">
+        <label class="filter-label" for="bonusPersonSelect">選擇業務員</label>
+        <select class="filter-select" id="bonusPersonSelect"></select>
+      </div>
+
+      <!-- KPI Summary Cards -->
+      <div class="kpi-grid bonus-kpi" style="margin-top:0.75rem">
+        <div class="kpi-card">
+          <p class="kpi-label">預估總獎金</p>
+          <div class="kpi-value-row">
+            <h3 class="kpi-value" id="bonusTotalBonus">--</h3>
+            <span class="kpi-change up" id="bonusMultiplierBadge">1.00x</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <p class="kpi-label">當前總銷售額</p>
+          <div class="kpi-value-row">
+            <h3 class="kpi-value" id="bonusTotalVolume">--</h3>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <p class="kpi-label">當前乘數階級</p>
+          <div class="kpi-value-row">
+            <h3 class="kpi-value bonus-multiplier-value" id="bonusCurrentTier">--</h3>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <p class="kpi-label">下一階差距</p>
+          <div class="kpi-value-row">
+            <h3 class="kpi-value" id="bonusNextGap" style="font-size:1rem">--</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tiered Progress Bar -->
+      <div class="card" style="margin-top:0.75rem">
+        <h4 class="card-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          階梯乘數進度
+        </h4>
+        <div id="bonusTierProgress" class="tier-progress"></div>
+      </div>
+
+      <!-- Charts: Bar chart for volume breakdown -->
+      <div class="chart-stack" style="margin-top:0.75rem">
+        <div class="card">
+          <h4 class="card-title">新案 vs 舊案銷售額</h4>
+          <div class="chart-container"><canvas id="chartBonusBreakdown"></canvas></div>
+        </div>
+        <div class="card">
+          <h4 class="card-title">各建案獎金貢獻</h4>
+          <div class="chart-container"><canvas id="chartBonusProject"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Sales Detail Table -->
+      <div class="card" style="margin-top:0.75rem">
+        <div class="table-header">
+          <h4 class="card-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+            成交明細
+          </h4>
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>建案名稱</th>
+                <th>類別</th>
+                <th>成交日期</th>
+                <th class="text-right">成交金額 (萬)</th>
+                <th class="text-right">原始獎金 (萬)</th>
+                <th class="text-right">庫齡加權</th>
+              </tr>
+            </thead>
+            <tbody id="bonusTableBody"></tbody>
+          </table>
+        </div>
+        <div class="bonus-deal-cards" id="bonusDealCards"></div>
+      </div>
+
+      <!-- Bonus Simulator -->
+      <div class="card bonus-simulator-card" style="margin-top:0.75rem">
+        <h4 class="card-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          獎金模擬器
+        </h4>
+        <p class="simulator-desc">輸入預計成交金額，即時試算乘數跳升與獎金增量</p>
+        <div class="simulator-row">
+          <div class="simulator-input-group">
+            <label class="simulator-label" for="simProject">建案</label>
+            <select class="filter-select" id="simProject">
+              <option value="新案">新案</option>
+              <option value="舊案-1年">舊案 (1-2年)</option>
+              <option value="舊案-2年">舊案 (2-3年)</option>
+              <option value="舊案-3年">舊案 (3年+)</option>
+            </select>
+          </div>
+          <div class="simulator-input-group">
+            <label class="simulator-label" for="simAmount">成交金額 (萬)</label>
+            <input type="number" class="simulator-input" id="simAmount" placeholder="例: 3000" min="0" step="100">
+          </div>
+          <button class="simulator-btn" id="simCalcBtn">試算</button>
+        </div>
+        <div class="simulator-result" id="simResult" style="display:none">
+          <div class="sim-result-row">
+            <span class="sim-label">模擬後總銷售額</span>
+            <span class="sim-value" id="simNewVolume">--</span>
+          </div>
+          <div class="sim-result-row">
+            <span class="sim-label">新乘數</span>
+            <span class="sim-value sim-highlight" id="simNewMultiplier">--</span>
+          </div>
+          <div class="sim-result-row">
+            <span class="sim-label">獎金增量</span>
+            <span class="sim-value sim-highlight" id="simBonusDelta">--</span>
+          </div>
+        </div>
       </div>
     </div>
   </main>

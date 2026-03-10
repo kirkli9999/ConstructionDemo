@@ -421,6 +421,127 @@ var ASSISTANT_COLORS = {
   '台北中山賦': '#f59e0b', '台中雲峰': '#f97316', '成都涵碧天下': '#ef4444', '員林案': '#ec4899',
 };
 
+// ====== Page 5: Bonus Charts ======
+
+/**
+ * Page 5: 新案 vs 舊案 銷售額 (Stacked bar per salesperson)
+ */
+function renderBonusBreakdownChart(personId) {
+  destroyChart('chartBonusBreakdown');
+  var ctx = document.getElementById('chartBonusBreakdown');
+  if (!ctx) return;
+
+  var person = MOCK_DATA.bonusSales.find(function (p) { return p.id === personId; });
+  if (!person) return;
+
+  var mobile = isMobile();
+  var newTotal = 0;
+  var oldTotal = 0;
+  var oldWeighted = 0;
+
+  person.deals.forEach(function (d) {
+    if (d.type === '新案') {
+      newTotal += d.amount;
+    } else {
+      oldTotal += d.amount;
+      var weight = d.aging >= 3 ? 1.2 : 1.0;
+      oldWeighted += d.amount * weight;
+    }
+  });
+
+  chartInstances['chartBonusBreakdown'] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['新案', '舊案 (原始)', '舊案 (庫齡加權)'],
+      datasets: [{
+        label: '銷售額 (萬)',
+        data: [newTotal, oldTotal, Math.round(oldWeighted)],
+        backgroundColor: [CHART_COLORS.blue, CHART_COLORS.slate, '#eab308'],
+        borderRadius: 4,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      aspectRatio: mobile ? 1.2 : 1.5,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function (item) { return item.raw.toLocaleString() + ' 萬'; },
+          },
+        },
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: mobile ? 9 : 12 } } },
+        y: {
+          grid: { color: '#f1f5f9' }, beginAtZero: true,
+          ticks: {
+            font: { size: mobile ? 9 : 12 },
+            callback: function (v) { return v.toLocaleString() + '萬'; },
+          },
+        },
+      },
+    },
+  });
+}
+
+/**
+ * Page 5: 各建案獎金貢獻 (Doughnut)
+ */
+function renderBonusProjectChart(personId) {
+  destroyChart('chartBonusProject');
+  var ctx = document.getElementById('chartBonusProject');
+  if (!ctx) return;
+
+  var person = MOCK_DATA.bonusSales.find(function (p) { return p.id === personId; });
+  if (!person) return;
+
+  var mobile = isMobile();
+  var projectMap = {};
+  person.deals.forEach(function (d) {
+    projectMap[d.project] = (projectMap[d.project] || 0) + d.bonus;
+  });
+
+  var labels = Object.keys(projectMap);
+  var values = Object.values(projectMap);
+  var colors = ['#1e3a8a', '#2563eb', '#0ea5e9', '#22c55e', '#eab308'];
+
+  chartInstances['chartBonusProject'] = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: values,
+        backgroundColor: colors.slice(0, labels.length),
+        borderWidth: 2,
+        borderColor: '#fff',
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      aspectRatio: mobile ? 1.2 : 1.5,
+      cutout: '50%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { font: { size: mobile ? 10 : 12 }, padding: mobile ? 8 : 16 },
+        },
+        tooltip: {
+          callbacks: {
+            label: function (item) {
+              var total = item.dataset.data.reduce(function (a, b) { return a + b; }, 0);
+              var pct = ((item.raw / total) * 100).toFixed(1);
+              return item.label + ': ' + item.raw + '萬 (' + pct + '%)';
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
 function renderAssistantSankeyChart() {
   destroyChart('chartAssistantSankey');
   var ctx = document.getElementById('chartAssistantSankey');

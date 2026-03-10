@@ -11,6 +11,7 @@
     lifecycle: '生命週期進程管理',
     sales: '業務績效與激勵系統',
     management: '管理課題分析',
+    bonus: '獎金制度儀表板',
   };
 
   const STATUS_MAP = {
@@ -64,6 +65,11 @@
           renderLifecycleCostChart(pid);
           renderCostSankeyChart();
           renderAssistantSankeyChart();
+          break;
+        case 'bonus':
+          var bSelect = document.getElementById('bonusPersonSelect');
+          var bPid = bSelect ? bSelect.value : 'zhang';
+          renderBonusPage(bPid);
           break;
       }
     });
@@ -174,6 +180,249 @@
     });
   }
 
+  // --- Bonus Page: Calculation helpers ---
+  function calcBonusForPerson(person) {
+    var tiers = MOCK_DATA.bonusTiers;
+    var totalVolume = 0;
+    var weightedVolume = 0;
+    var totalBaseBonus = 0;
+    var newVolume = 0;
+    var oldVolume = 0;
+
+    person.deals.forEach(function (d) {
+      totalVolume += d.amount;
+      totalBaseBonus += d.bonus;
+      if (d.type === '新案') {
+        newVolume += d.amount;
+      } else {
+        oldVolume += d.amount;
+        // 3年以上舊案，總額以1.2倍計入
+        var weight = d.aging >= 3 ? 1.2 : 1.0;
+        weightedVolume += d.amount * weight;
+      }
+    });
+
+    // Weighted total = new案原額 + 舊案加權額
+    var effectiveVolume = newVolume + weightedVolume + (oldVolume - oldVolume); // keep raw for display
+    // For tier calculation, use weighted volume
+    var tierVolume = newVolume + weightedVolume;
+
+    // Find current tier (全額追溯)
+    var currentTier = tiers[0];
+    for (var i = tiers.length - 1; i >= 0; i--) {
+      if (tierVolume >= tiers[i].threshold) {
+        currentTier = tiers[i];
+        break;
+      }
+    }
+
+    var finalBonus = Math.round(totalBaseBonus * currentTier.multiplier);
+
+    // Next tier gap
+    var nextTier = null;
+    var gap = 0;
+    for (var j = 0; j < tiers.length; j++) {
+      if (tiers[j].threshold > tierVolume) {
+        nextTier = tiers[j];
+        gap = tiers[j].threshold - tierVolume;
+        break;
+      }
+    }
+
+    return {
+      totalVolume: totalVolume,
+      tierVolume: tierVolume,
+      newVolume: newVolume,
+      oldVolume: oldVolume,
+      totalBaseBonus: totalBaseBonus,
+      currentTier: currentTier,
+      finalBonus: finalBonus,
+      nextTier: nextTier,
+      gap: gap,
+    };
+  }
+
+  function renderBonusPage(personId) {
+    var person = MOCK_DATA.bonusSales.find(function (p) { return p.id === personId; });
+    if (!person) return;
+
+    var calc = calcBonusForPerson(person);
+
+    // Update KPI cards
+    document.getElementById('bonusTotalBonus').textContent = calc.finalBonus.toLocaleString() + '萬';
+    document.getElementById('bonusTotalVolume').textContent = calc.totalVolume.toLocaleString() + '萬';
+    document.getElementById('bonusCurrentTier').textContent = calc.currentTier.multiplier.toFixed(2) + 'x ' + calc.currentTier.label;
+    document.getElementById('bonusMultiplierBadge').textContent = calc.currentTier.multiplier.toFixed(2) + 'x';
+
+    if (calc.nextTier) {
+      document.getElementById('bonusNextGap').textContent = '再 ' + calc.gap.toLocaleString() + ' 萬 → ' + calc.nextTier.multiplier.toFixed(2) + 'x';
+    } else {
+      document.getElementById('bonusNextGap').textContent = '已達最高階';
+    }
+
+    // Render tier progress bar
+    renderTierProgress(calc);
+
+    // Render table
+    renderBonusTable(person);
+    renderBonusDealCards(person);
+
+    // Render charts
+    renderBonusBreakdownChart(personId);
+    renderBonusProjectChart(personId);
+
+    // Hide simulator result when switching person
+    var simResult = document.getElementById('simResult');
+    if (simResult) simResult.style.display = 'none';
+  }
+
+  function renderTierProgress(calc) {
+    var container = document.getElementById('bonusTierProgress');
+    if (!container) return;
+
+    var tiers = MOCK_DATA.bonusTiers;
+    var maxThreshold = tiers[tiers.length - 1].threshold;
+    var barMax = maxThreshold * 1.1; // give some room beyond top tier
+    var pct = Math.min((calc.tierVolume / barMax) * 100, 100);
+
+    var html = '<div class="tier-bar-wrap">' +
+      '<div class="tier-bar-track">' +
+        '<div class="tier-bar-fill' + (calc.currentTier.level >= 2 ? ' glow' : '') + '" style="width:' + pct + '%"></div>' +
+      '</div>' +
+      '<div class="tier-markers">';
+
+    for (var i = 1; i < tiers.length; i++) {
+      var pos = (tiers[i].threshold / barMax) * 100;
+      var isActive = calc.tierVolume >= tiers[i].threshold;
+      html += '<div class="tier-marker' + (isActive ? ' active' : '') + '" style="left:' + pos + '%">' +
+        '<div class="tier-marker-dot"></div>' +
+        tiers[i].multiplier.toFixed(2) + 'x<br>' + (tiers[i].threshold / 10000).toFixed(1) + '億' +
+      '</div>';
+    }
+
+    html += '</div></div>';
+    container.innerHTML = html;
+  }
+
+  function renderBonusTable(person) {
+    var tbody = document.getElementById('bonusTableBody');
+    if (!tbody) return;
+
+    tbody.innerHTML = person.deals.map(function (d) {
+      var weight = d.aging >= 3 ? '1.2x' : (d.type === '舊案' ? '1.0x' : '-');
+      var typeClass = d.type === '新案' ? 'new-deal' : 'old-deal';
+      return '<tr>' +
+        '<td>' + d.project + '</td>' +
+        '<td><span class="bonus-deal-type ' + typeClass + '">' + d.type + '</span></td>' +
+        '<td>' + d.date + '</td>' +
+        '<td class="text-right">' + d.amount.toLocaleString() + '</td>' +
+        '<td class="text-right">' + d.bonus.toLocaleString() + '</td>' +
+        '<td class="text-right">' + weight + '</td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  function renderBonusDealCards(person) {
+    var container = document.getElementById('bonusDealCards');
+    if (!container) return;
+
+    container.innerHTML = person.deals.map(function (d) {
+      var typeClass = d.type === '新案' ? 'new-deal' : 'old-deal';
+      var weight = d.aging >= 3 ? '1.2x' : (d.type === '舊案' ? '1.0x' : '-');
+      return '<div class="bonus-deal-item">' +
+        '<div class="bonus-deal-top">' +
+          '<span class="bonus-deal-project">' + d.project + '</span>' +
+          '<span class="bonus-deal-type ' + typeClass + '">' + d.type + '</span>' +
+        '</div>' +
+        '<div class="bonus-deal-stats">' +
+          '<div class="bonus-deal-stat">' +
+            '<div class="bonus-deal-stat-label">金額</div>' +
+            '<div class="bonus-deal-stat-value">' + d.amount.toLocaleString() + '萬</div>' +
+          '</div>' +
+          '<div class="bonus-deal-stat">' +
+            '<div class="bonus-deal-stat-label">獎金</div>' +
+            '<div class="bonus-deal-stat-value">' + d.bonus + '萬</div>' +
+          '</div>' +
+          '<div class="bonus-deal-stat">' +
+            '<div class="bonus-deal-stat-label">庫齡加權</div>' +
+            '<div class="bonus-deal-stat-value">' + weight + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  // --- Bonus Page: Dropdown ---
+  function initBonusPersonSelect() {
+    var select = document.getElementById('bonusPersonSelect');
+    if (!select) return;
+
+    select.innerHTML = MOCK_DATA.bonusSales.map(function (p) {
+      return '<option value="' + p.id + '">' + p.name + '</option>';
+    }).join('');
+
+    select.addEventListener('change', function () {
+      renderBonusPage(select.value);
+    });
+  }
+
+  // --- Bonus Page: Simulator ---
+  function initBonusSimulator() {
+    var btn = document.getElementById('simCalcBtn');
+    if (!btn) return;
+
+    btn.addEventListener('click', function () {
+      var personSelect = document.getElementById('bonusPersonSelect');
+      var personId = personSelect ? personSelect.value : 'zhang';
+      var person = MOCK_DATA.bonusSales.find(function (p) { return p.id === personId; });
+      if (!person) return;
+
+      var amountInput = document.getElementById('simAmount');
+      var simAmount = parseFloat(amountInput.value) || 0;
+      if (simAmount <= 0) return;
+
+      var projectType = document.getElementById('simProject').value;
+      var calc = calcBonusForPerson(person);
+
+      // Determine aging weight for sim deal
+      var simAging = 0;
+      if (projectType === '舊案-1年') simAging = 1.5;
+      else if (projectType === '舊案-2年') simAging = 2.5;
+      else if (projectType === '舊案-3年') simAging = 3.5;
+
+      var simWeight = simAging >= 3 ? 1.2 : 1.0;
+      var simWeightedAmount = simAging > 0 ? simAmount * simWeight : simAmount;
+      var newTierVolume = calc.tierVolume + simWeightedAmount;
+
+      // Find new tier
+      var tiers = MOCK_DATA.bonusTiers;
+      var newTier = tiers[0];
+      for (var i = tiers.length - 1; i >= 0; i--) {
+        if (newTierVolume >= tiers[i].threshold) {
+          newTier = tiers[i];
+          break;
+        }
+      }
+
+      // Sim bonus: assume 3% commission on new deal
+      var simDealBonus = Math.round(simAmount * 0.03);
+      var newTotalBaseBonus = calc.totalBaseBonus + simDealBonus;
+      var newFinalBonus = Math.round(newTotalBaseBonus * newTier.multiplier);
+      var delta = newFinalBonus - calc.finalBonus;
+
+      // Display results
+      document.getElementById('simNewVolume').textContent = Math.round(newTierVolume).toLocaleString() + ' 萬';
+      document.getElementById('simNewMultiplier').textContent = newTier.multiplier.toFixed(2) + 'x ' + newTier.label;
+      document.getElementById('simBonusDelta').textContent = '+' + delta.toLocaleString() + ' 萬';
+
+      var upgraded = newTier.level > calc.currentTier.level;
+      document.getElementById('simNewMultiplier').style.color = upgraded ? '#22c55e' : '';
+      document.getElementById('simBonusDelta').style.color = upgraded ? '#22c55e' : '';
+
+      document.getElementById('simResult').style.display = '';
+    });
+  }
+
   // --- Initialize ---
   function init() {
     // Setup all navigation buttons (sidebar + mobile tabs)
@@ -186,6 +435,8 @@
     renderSalesTable();
     renderSalesCards();
     initProjectSelect();
+    initBonusPersonSelect();
+    initBonusSimulator();
 
     // Render initial page charts
     renderPageCharts('summary');
