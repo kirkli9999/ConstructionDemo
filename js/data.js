@@ -44,4 +44,96 @@ const MOCK_DATA = {
     { name: '王大同', deals: 9, volume: 140, roi: 7.2, satisfaction: 4.5 },
     { name: '林小春', deals: 7, volume: 95, roi: 6.8, satisfaction: 4.7 },
   ],
+
+  // ====== 第四頁：管理課題 ======
+
+  // 建案清單（下拉選單用）
+  projects: [
+    { id: 'zhongshan', name: '台北中山賦' },
+    { id: 'yunfeng', name: '台中雲峰' },
+    { id: 'chengdu', name: '成都涵碧天下' },
+    { id: 'yuanlin', name: '員林案' },
+  ],
+
+  // 各建案生命週期：累積成本 vs 累積收入 (百萬 NTD)
+  projectLifecycle: {
+    zhongshan: [
+      { stage: '土地開發', cost: 800, revenue: 0 },
+      { stage: '建築規劃', cost: 920, revenue: 0 },
+      { stage: '預售階段', cost: 980, revenue: 450 },
+      { stage: '施工階段', cost: 1350, revenue: 680 },
+      { stage: '交屋結案', cost: 1400, revenue: 1200 },
+    ],
+    yunfeng: [
+      { stage: '土地開發', cost: 500, revenue: 0 },
+      { stage: '建築規劃', cost: 580, revenue: 0 },
+      { stage: '預售階段', cost: 640, revenue: 320 },
+      { stage: '施工階段', cost: 900, revenue: 520 },
+      { stage: '交屋結案', cost: 950, revenue: 850 },
+    ],
+    chengdu: [
+      { stage: '土地開發', cost: 1200, revenue: 0 },
+      { stage: '建築規劃', cost: 1380, revenue: 0 },
+      { stage: '預售階段', cost: 1500, revenue: 600 },
+      { stage: '施工階段', cost: 1900, revenue: 950 },
+      { stage: '交屋結案', cost: 2000, revenue: 1500 },
+    ],
+    yuanlin: [
+      { stage: '土地開發', cost: 250, revenue: 0 },
+      { stage: '建築規劃', cost: 300, revenue: 0 },
+      { stage: '預售階段', cost: 340, revenue: 150 },
+      { stage: '施工階段', cost: 450, revenue: 280 },
+      { stage: '交屋結案', cost: 480, revenue: 400 },
+    ],
+  },
+
+  // 部門成本流向桑基圖：支援部門 → 地區 → 建案類型 → 建案
+  costSankey: [
+    // 支援部門 → 地區
+    { from: '設計部', to: '北區', flow: 180 },
+    { from: '設計部', to: '中區', flow: 140 },
+    { from: '設計部', to: '海外', flow: 200 },
+    { from: '工程部', to: '北區', flow: 300 },
+    { from: '工程部', to: '中區', flow: 250 },
+    { from: '工程部', to: '海外', flow: 350 },
+    { from: '行銷部', to: '北區', flow: 120 },
+    { from: '行銷部', to: '中區', flow: 90 },
+    { from: '行銷部', to: '海外', flow: 100 },
+    { from: '管理部', to: '北區', flow: 80 },
+    { from: '管理部', to: '中區', flow: 70 },
+    { from: '管理部', to: '海外', flow: 60 },
+    // 地區 → 建案類型
+    { from: '北區', to: '高端住宅', flow: 520 },
+    { from: '北區', to: '商辦', flow: 160 },
+    { from: '中區', to: '飯店住宅', flow: 300 },
+    { from: '中區', to: '一般住宅', flow: 250 },
+    { from: '海外', to: '複合式開發', flow: 710 },
+    // 建案類型 → 建案
+    { from: '高端住宅', to: '台北中山賦', flow: 520 },
+    { from: '商辦', to: '台北信義案(規劃中)', flow: 160 },
+    { from: '飯店住宅', to: '台中雲峰', flow: 300 },
+    { from: '一般住宅', to: '員林案', flow: 250 },
+    { from: '複合式開發', to: '成都涵碧天下', flow: 710 },
+  ],
+
+  // 業助支援桑基圖：業助 → 業務員 → 建案
+  assistantSankey: [
+    // 業助 → 業務員
+    { from: '陳美玲(業助)', to: '張曉明', flow: 45 },
+    { from: '陳美玲(業助)', to: '李佩嘉', flow: 35 },
+    { from: '林雅婷(業助)', to: '王大同', flow: 40 },
+    { from: '林雅婷(業助)', to: '林小春', flow: 30 },
+    { from: '林雅婷(業助)', to: '張曉明', flow: 15 },
+    { from: '黃淑芬(業助)', to: '李佩嘉', flow: 25 },
+    { from: '黃淑芬(業助)', to: '王大同', flow: 20 },
+    // 業務員 → 建案
+    { from: '張曉明', to: '台北中山賦', flow: 35 },
+    { from: '張曉明', to: '台中雲峰', flow: 25 },
+    { from: '李佩嘉', to: '台北中山賦', flow: 30 },
+    { from: '李佩嘉', to: '成都涵碧天下', flow: 30 },
+    { from: '王大同', to: '台中雲峰', flow: 35 },
+    { from: '王大同', to: '員林案', flow: 25 },
+    { from: '林小春', to: '員林案', flow: 20 },
+    { from: '林小春', to: '成都涵碧天下', flow: 10 },
+  ],
 };

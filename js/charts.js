@@ -276,3 +276,192 @@ function renderSalesBarChart() {
     },
   });
 }
+
+// ====== Page 4: Management Charts ======
+
+/**
+ * Page 4: 建案生命週期 累積成本 vs 累積收入 (折線圖)
+ */
+function renderLifecycleCostChart(projectId) {
+  destroyChart('chartLifecycleCost');
+  var ctx = document.getElementById('chartLifecycleCost');
+  if (!ctx) return;
+
+  var pid = projectId || 'zhongshan';
+  var data = MOCK_DATA.projectLifecycle[pid];
+  if (!data) return;
+
+  var mobile = isMobile();
+  var labels = data.map(function (d) { return d.stage; });
+
+  chartInstances['chartLifecycleCost'] = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: '累積成本 (百萬)',
+          data: data.map(function (d) { return d.cost; }),
+          borderColor: '#1e3a8a',
+          backgroundColor: 'rgba(30,58,138,0.08)',
+          fill: true,
+          tension: 0.3,
+          pointRadius: mobile ? 4 : 6,
+          pointHoverRadius: mobile ? 6 : 8,
+          borderWidth: 2,
+        },
+        {
+          label: '累積收入 (百萬)',
+          data: data.map(function (d) { return d.revenue; }),
+          borderColor: '#22c55e',
+          backgroundColor: 'rgba(34,197,94,0.08)',
+          fill: true,
+          tension: 0.3,
+          pointRadius: mobile ? 4 : 6,
+          pointHoverRadius: mobile ? 6 : 8,
+          borderWidth: 2,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      aspectRatio: mobile ? 1.2 : 2,
+      plugins: {
+        legend: {
+          position: 'top',
+          labels: { font: { size: mobile ? 10 : 12 }, boxWidth: mobile ? 12 : 40 },
+        },
+        tooltip: {
+          callbacks: {
+            label: function (item) {
+              return item.dataset.label + ': NT$' + item.raw + 'M';
+            },
+          },
+        },
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { font: { size: mobile ? 8 : 12 }, maxRotation: mobile ? 45 : 0 },
+        },
+        y: {
+          grid: { color: '#f1f5f9' },
+          beginAtZero: true,
+          ticks: {
+            font: { size: mobile ? 9 : 12 },
+            callback: function (v) { return 'NT$' + v + 'M'; },
+          },
+        },
+      },
+    },
+  });
+}
+
+/**
+ * Page 4: 部門成本流向桑基圖
+ */
+var SANKEY_COLORS = {
+  '設計部': '#6366f1', '工程部': '#2563eb', '行銷部': '#0ea5e9', '管理部': '#8b5cf6',
+  '北區': '#1e3a8a', '中區': '#1d4ed8', '海外': '#0369a1',
+  '高端住宅': '#059669', '飯店住宅': '#10b981', '一般住宅': '#34d399', '複合式開發': '#6ee7b7', '商辦': '#a7f3d0',
+  '台北中山賦': '#f59e0b', '台中雲峰': '#f97316', '成都涵碧天下': '#ef4444', '員林案': '#ec4899',
+  '台北信義案(規劃中)': '#d946ef',
+};
+
+function renderCostSankeyChart() {
+  destroyChart('chartCostSankey');
+  var ctx = document.getElementById('chartCostSankey');
+  if (!ctx) return;
+
+  var mobile = isMobile();
+
+  chartInstances['chartCostSankey'] = new Chart(ctx, {
+    type: 'sankey',
+    data: {
+      datasets: [{
+        data: MOCK_DATA.costSankey,
+        colorFrom: function (c) { return SANKEY_COLORS[c.dataset.data[c.dataIndex].from] || '#94a3b8'; },
+        colorTo: function (c) { return SANKEY_COLORS[c.dataset.data[c.dataIndex].to] || '#94a3b8'; },
+        colorMode: 'gradient',
+        labels: {
+          '成都涵碧天下': '涵碧天下',
+          '台北信義案(規劃中)': '信義案(規劃)',
+        },
+        borderWidth: 0,
+        nodeWidth: mobile ? 8 : 12,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      aspectRatio: mobile ? 0.9 : 1.6,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function (item) {
+              var d = item.dataset.data[item.dataIndex];
+              return d.from + ' → ' + d.to + ': NT$' + d.flow + 'M';
+            },
+          },
+        },
+      },
+      font: { size: mobile ? 9 : 11 },
+    },
+  });
+}
+
+/**
+ * Page 4: 業助支援桑基圖
+ */
+var ASSISTANT_COLORS = {
+  '陳美玲(業助)': '#8b5cf6', '林雅婷(業助)': '#a78bfa', '黃淑芬(業助)': '#c4b5fd',
+  '張曉明': '#2563eb', '李佩嘉': '#0ea5e9', '王大同': '#06b6d4', '林小春': '#14b8a6',
+  '台北中山賦': '#f59e0b', '台中雲峰': '#f97316', '成都涵碧天下': '#ef4444', '員林案': '#ec4899',
+};
+
+function renderAssistantSankeyChart() {
+  destroyChart('chartAssistantSankey');
+  var ctx = document.getElementById('chartAssistantSankey');
+  if (!ctx) return;
+
+  var mobile = isMobile();
+
+  chartInstances['chartAssistantSankey'] = new Chart(ctx, {
+    type: 'sankey',
+    data: {
+      datasets: [{
+        data: MOCK_DATA.assistantSankey,
+        colorFrom: function (c) { return ASSISTANT_COLORS[c.dataset.data[c.dataIndex].from] || '#94a3b8'; },
+        colorTo: function (c) { return ASSISTANT_COLORS[c.dataset.data[c.dataIndex].to] || '#94a3b8'; },
+        colorMode: 'gradient',
+        labels: {
+          '陳美玲(業助)': '陳美玲',
+          '林雅婷(業助)': '林雅婷',
+          '黃淑芬(業助)': '黃淑芬',
+          '成都涵碧天下': '涵碧天下',
+        },
+        borderWidth: 0,
+        nodeWidth: mobile ? 8 : 12,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      aspectRatio: mobile ? 0.9 : 1.6,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function (item) {
+              var d = item.dataset.data[item.dataIndex];
+              return d.from + ' → ' + d.to + ': ' + d.flow + ' 工時';
+            },
+          },
+        },
+      },
+      font: { size: mobile ? 9 : 11 },
+    },
+  });
+}

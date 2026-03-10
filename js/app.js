@@ -10,6 +10,7 @@
     summary: '集團經營儀表板',
     lifecycle: '生命週期進程管理',
     sales: '業務績效與激勵系統',
+    management: '管理課題分析',
   };
 
   const STATUS_MAP = {
@@ -57,7 +58,13 @@
           renderScatterChart();
           renderSalesBarChart();
           break;
-      }
+        case 'management':
+          var select = document.getElementById('projectSelect');
+          var pid = select ? select.value : 'zhongshan';
+          renderLifecycleCostChart(pid);
+          renderCostSankeyChart();
+          renderAssistantSankeyChart();
+          break;
     });
   }
 
@@ -152,6 +159,20 @@
     }, 250);
   }
 
+  // --- Management Page: Project Dropdown ---
+  function initProjectSelect() {
+    var select = document.getElementById('projectSelect');
+    if (!select) return;
+
+    select.innerHTML = MOCK_DATA.projects.map(function (p) {
+      return '<option value="' + p.id + '">' + p.name + '</option>';
+    }).join('');
+
+    select.addEventListener('change', function () {
+      renderLifecycleCostChart(select.value);
+    });
+  }
+
   // --- Initialize ---
   function init() {
     // Setup all navigation buttons (sidebar + mobile tabs)
@@ -163,6 +184,7 @@
     renderLifecycleStages();
     renderSalesTable();
     renderSalesCards();
+    initProjectSelect();
 
     // Render initial page charts
     renderPageCharts('summary');
