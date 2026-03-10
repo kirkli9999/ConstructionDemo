@@ -8,178 +8,176 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 </head>
 <body>
-  <div class="app">
-    <!-- Desktop Sidebar -->
-    <aside class="sidebar">
-      <h1 class="sidebar-brand">SHINING GROUP</h1>
-      <p class="sidebar-subtitle">鄉林建設管理系統</p>
-      <nav class="sidebar-nav">
-        <button class="nav-btn active" data-page="summary">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-          財務與利潤中心
-        </button>
-        <button class="nav-btn" data-page="lifecycle">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          建案生命週期
-        </button>
-        <button class="nav-btn" data-page="sales">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          業務戰力考核
-        </button>
-      </nav>
-    </aside>
+  <!-- Desktop Sidebar -->
+  <aside class="sidebar">
+    <h1 class="sidebar-brand">SHINING GROUP</h1>
+    <p class="sidebar-subtitle">鄉林建設管理系統</p>
+    <nav class="sidebar-nav">
+      <button class="nav-btn active" data-page="summary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        財務與利潤中心
+      </button>
+      <button class="nav-btn" data-page="lifecycle">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        建案生命週期
+      </button>
+      <button class="nav-btn" data-page="sales">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        業務戰力考核
+      </button>
+    </nav>
+  </aside>
 
-    <!-- Mobile Top Header -->
-    <header class="mobile-header">
-      <div class="mobile-brand">SHINING GROUP</div>
-      <div class="mobile-tabs">
-        <button class="tab-btn active" data-page="summary">財務總覽</button>
-        <button class="tab-btn" data-page="lifecycle">生命週期</button>
-        <button class="tab-btn" data-page="sales">業務考核</button>
+  <!-- Mobile Top Header -->
+  <header class="mobile-header">
+    <div class="mobile-brand">鄉林建設 管理儀表板</div>
+    <nav class="mobile-tabs">
+      <button class="tab-btn active" data-page="summary">財務總覽</button>
+      <button class="tab-btn" data-page="lifecycle">生命週期</button>
+      <button class="tab-btn" data-page="sales">業務考核</button>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="page-header">
+      <h2 class="page-title" id="pageTitle">集團經營儀表板</h2>
+      <div class="header-badge">
+        <span class="pulse-dot"></span>
+        模擬資料 Demo
       </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="main-content">
-      <header class="page-header">
-        <h2 class="page-title" id="pageTitle">集團經營儀表板</h2>
-        <div class="header-badge">
-          <span class="pulse-dot"></span>
-          2026 年度實時數據
-        </div>
-      </header>
-
-      <!-- Page: Summary -->
-      <div class="page active" id="page-summary">
-        <div class="kpi-grid">
-          <div class="kpi-card">
-            <p class="kpi-label">集團營收</p>
-            <div class="kpi-value-row">
-              <h3 class="kpi-value">32.5億</h3>
-              <span class="kpi-change up">+5.2%</span>
-            </div>
-          </div>
-          <div class="kpi-card">
-            <p class="kpi-label">平均毛利率</p>
-            <div class="kpi-value-row">
-              <h3 class="kpi-value">28.5%</h3>
-              <span class="kpi-change up">+3.2%</span>
-            </div>
-          </div>
-          <div class="kpi-card">
-            <p class="kpi-label">資產週轉率</p>
-            <div class="kpi-value-row">
-              <h3 class="kpi-value">1.2x</h3>
-              <span class="kpi-change down">-0.1</span>
-            </div>
-          </div>
-          <div class="kpi-card">
-            <p class="kpi-label">品牌溢價率</p>
-            <div class="kpi-value-row">
-              <h3 class="kpi-value">115%</h3>
-              <span class="kpi-change up">+2.0%</span>
-            </div>
+    <!-- Page: Summary -->
+    <div class="page active" id="page-summary">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <p class="kpi-label">集團營收</p>
+          <div class="kpi-value-row">
+            <h3 class="kpi-value">32.5億</h3>
+            <span class="kpi-change up">+5.2%</span>
           </div>
         </div>
-
-        <div class="chart-grid">
-          <div class="card">
-            <h4 class="card-title">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-              利潤中心 P&amp;L（按建案）
-            </h4>
-            <div class="chart-container"><canvas id="chartProfitCenter"></canvas></div>
+        <div class="kpi-card">
+          <p class="kpi-label">平均毛利率</p>
+          <div class="kpi-value-row">
+            <h3 class="kpi-value">28.5%</h3>
+            <span class="kpi-change up">+3.2%</span>
           </div>
-          <div class="card">
-            <h4 class="card-title">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-              地區貢獻佔比
-            </h4>
-            <div class="chart-container"><canvas id="chartRegion"></canvas></div>
+        </div>
+        <div class="kpi-card">
+          <p class="kpi-label">資產週轉率</p>
+          <div class="kpi-value-row">
+            <h3 class="kpi-value">1.2x</h3>
+            <span class="kpi-change down">-0.1</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <p class="kpi-label">品牌溢價率</p>
+          <div class="kpi-value-row">
+            <h3 class="kpi-value">115%</h3>
+            <span class="kpi-change up">+2.0%</span>
           </div>
         </div>
       </div>
 
-      <!-- Page: Lifecycle -->
-      <div class="page" id="page-lifecycle">
+      <div class="chart-stack">
         <div class="card">
           <h4 class="card-title">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            建案生命週期進度與成本偏差
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            利潤中心 P&amp;L（按建案）
           </h4>
-          <div class="lifecycle-stages" id="lifecycleStages"></div>
+          <div class="chart-container"><canvas id="chartProfitCenter"></canvas></div>
         </div>
-
-        <div class="chart-grid">
-          <div class="card">
-            <h4 class="card-title">存貨庫齡分佈（去化壓力）</h4>
-            <div class="chart-container"><canvas id="chartInventory"></canvas></div>
-          </div>
-          <div class="card alert-card">
-            <div class="alert-icon">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#EAB308" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            </div>
-            <h4 class="alert-title">2026 資金回籠預警</h4>
-            <p class="alert-desc">「鄉林中山賦」已進入預售末期，預計 Q3 貢獻回籠資金 15.8 億。</p>
-            <div class="alert-details">
-              <div class="alert-detail-item">
-                <span class="alert-detail-label">預計回籠</span>
-                <span class="alert-detail-value">NT$ 15.8 億</span>
-              </div>
-              <div class="alert-detail-item">
-                <span class="alert-detail-label">目標季度</span>
-                <span class="alert-detail-value">2026 Q3</span>
-              </div>
-              <div class="alert-detail-item">
-                <span class="alert-detail-label">風險等級</span>
-                <span class="alert-detail-value warning">中度關注</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Page: Sales -->
-      <div class="page" id="page-sales">
         <div class="card">
-          <div class="table-header">
-            <h4 class="card-title">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              業務戰力與 ROI 指標
-            </h4>
-            <span class="table-update">更新時間：2026/03/10</span>
-          </div>
-          <div class="table-wrapper">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>排名</th>
-                  <th>業務員</th>
-                  <th class="text-right">成交件數</th>
-                  <th class="text-right">總銷金額 (M)</th>
-                  <th class="text-right">個人 ROI</th>
-                  <th class="text-right">客戶滿意度</th>
-                </tr>
-              </thead>
-              <tbody id="salesTableBody"></tbody>
-            </table>
-          </div>
-          <div class="sales-cards" id="salesCards"></div>
+          <h4 class="card-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            地區貢獻佔比
+          </h4>
+          <div class="chart-container"><canvas id="chartRegion"></canvas></div>
         </div>
+      </div>
+    </div>
 
-        <div class="chart-grid">
-          <div class="card">
-            <h4 class="card-title">業務成交量 vs ROI 散佈圖</h4>
-            <div class="chart-container"><canvas id="chartScatter"></canvas></div>
+    <!-- Page: Lifecycle -->
+    <div class="page" id="page-lifecycle">
+      <div class="card">
+        <h4 class="card-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          建案生命週期進度與成本偏差
+        </h4>
+        <div class="lifecycle-stages" id="lifecycleStages"></div>
+      </div>
+
+      <div class="chart-stack">
+        <div class="card">
+          <h4 class="card-title">存貨庫齡分佈（去化壓力）</h4>
+          <div class="chart-container"><canvas id="chartInventory"></canvas></div>
+        </div>
+        <div class="card alert-card">
+          <div class="alert-icon">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#EAB308" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           </div>
-          <div class="card">
-            <h4 class="card-title">業務員銷售金額排行</h4>
-            <div class="chart-container"><canvas id="chartSalesBar"></canvas></div>
+          <h4 class="alert-title">2026 資金回籠預警</h4>
+          <p class="alert-desc">「鄉林中山賦」已進入預售末期，預計 Q3 貢獻回籠資金 15.8 億。</p>
+          <div class="alert-details">
+            <div class="alert-detail-item">
+              <span class="alert-detail-label">預計回籠</span>
+              <span class="alert-detail-value">NT$ 15.8 億</span>
+            </div>
+            <div class="alert-detail-item">
+              <span class="alert-detail-label">目標季度</span>
+              <span class="alert-detail-value">2026 Q3</span>
+            </div>
+            <div class="alert-detail-item">
+              <span class="alert-detail-label">風險等級</span>
+              <span class="alert-detail-value warning">中度關注</span>
+            </div>
           </div>
         </div>
       </div>
-    </main>
-  </div>
+    </div>
+
+    <!-- Page: Sales -->
+    <div class="page" id="page-sales">
+      <div class="card">
+        <div class="table-header">
+          <h4 class="card-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            業務戰力與 ROI 指標
+          </h4>
+          <span class="table-update">更新時間：2026/03/10</span>
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>排名</th>
+                <th>業務員</th>
+                <th class="text-right">成交件數</th>
+                <th class="text-right">總銷金額 (M)</th>
+                <th class="text-right">個人 ROI</th>
+                <th class="text-right">客戶滿意度</th>
+              </tr>
+            </thead>
+            <tbody id="salesTableBody"></tbody>
+          </table>
+        </div>
+        <div class="sales-cards" id="salesCards"></div>
+      </div>
+
+      <div class="chart-stack">
+        <div class="card">
+          <h4 class="card-title">業務成交量 vs ROI 散佈圖</h4>
+          <div class="chart-container"><canvas id="chartScatter"></canvas></div>
+        </div>
+        <div class="card">
+          <h4 class="card-title">業務員銷售金額排行</h4>
+          <div class="chart-container"><canvas id="chartSalesBar"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </main>
 
   <script src="js/data.js"></script>
   <script src="js/charts.js"></script>
