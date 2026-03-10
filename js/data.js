@@ -14,10 +14,10 @@ const MOCK_DATA = {
 
   // 利潤中心（按建案）- 含 SLA 內部服務定價分攤
   profitCenters: [
-    { name: '台北中山賦', region: '北部', revenue: 1200, profit: 360, margin: 30, type: '高端住宅', slaBase: 18, slaValue: 12 },
-    { name: '台中雲峰', region: '中部', revenue: 850, profit: 212, margin: 25, type: '飯店住宅', slaBase: 13, slaValue: 8 },
-    { name: '成都涵碧天下', region: '大陸', revenue: 1500, profit: 450, margin: 30, type: '複合式', slaBase: 22, slaValue: 18 },
-    { name: '員林案', region: '中部', revenue: 400, profit: 80, margin: 20, type: '住宅', slaBase: 6, slaValue: 3 },
+    { name: '北市A1案', region: '北部', revenue: 1200, profit: 360, margin: 30, type: '高端住宅', slaBase: 18, slaValue: 12 },
+    { name: '中部B2案', region: '中部', revenue: 850, profit: 212, margin: 25, type: '飯店住宅', slaBase: 13, slaValue: 8 },
+    { name: '海外C3案', region: '大陸', revenue: 1500, profit: 450, margin: 30, type: '複合式', slaBase: 22, slaValue: 18 },
+    { name: '中部D4案', region: '中部', revenue: 400, profit: 80, margin: 20, type: '住宅', slaBase: 6, slaValue: 3 },
   ],
 
   // 內部服務定價 SLA 後勤部門
@@ -61,10 +61,10 @@ const MOCK_DATA = {
 
   // 建案清單（下拉選單用）
   projects: [
-    { id: 'zhongshan', name: '台北中山賦' },
-    { id: 'yunfeng', name: '台中雲峰' },
-    { id: 'chengdu', name: '成都涵碧天下' },
-    { id: 'yuanlin', name: '員林案' },
+    { id: 'zhongshan', name: '北市A1案' },
+    { id: 'yunfeng', name: '中部B2案' },
+    { id: 'chengdu', name: '海外C3案' },
+    { id: 'yuanlin', name: '中部D4案' },
   ],
 
   // 各建案生命週期：累積成本 vs 累積收入 (百萬 NTD)
@@ -121,11 +121,11 @@ const MOCK_DATA = {
     { from: '中區', to: '一般住宅', flow: 250 },
     { from: '海外', to: '複合式開發', flow: 710 },
     // 建案類型 → 建案
-    { from: '高端住宅', to: '台北中山賦', flow: 520 },
-    { from: '商辦', to: '台北信義案(規劃中)', flow: 160 },
-    { from: '飯店住宅', to: '台中雲峰', flow: 300 },
-    { from: '一般住宅', to: '員林案', flow: 250 },
-    { from: '複合式開發', to: '成都涵碧天下', flow: 710 },
+    { from: '高端住宅', to: '北市A1案', flow: 520 },
+    { from: '商辦', to: '北市E5案(規劃中)', flow: 160 },
+    { from: '飯店住宅', to: '中部B2案', flow: 300 },
+    { from: '一般住宅', to: '中部D4案', flow: 250 },
+    { from: '複合式開發', to: '海外C3案', flow: 710 },
   ],
 
   // 業助支援桑基圖：業助 → 業務員 → 建案
@@ -139,14 +139,14 @@ const MOCK_DATA = {
     { from: '黃淑芬(業助)', to: '李佩嘉', flow: 25 },
     { from: '黃淑芬(業助)', to: '王大同', flow: 20 },
     // 業務員 → 建案
-    { from: '張曉明', to: '台北中山賦', flow: 35 },
-    { from: '張曉明', to: '台中雲峰', flow: 25 },
-    { from: '李佩嘉', to: '台北中山賦', flow: 30 },
-    { from: '李佩嘉', to: '成都涵碧天下', flow: 30 },
-    { from: '王大同', to: '台中雲峰', flow: 35 },
-    { from: '王大同', to: '員林案', flow: 25 },
-    { from: '林小春', to: '員林案', flow: 20 },
-    { from: '林小春', to: '成都涵碧天下', flow: 10 },
+    { from: '張曉明', to: '北市A1案', flow: 35 },
+    { from: '張曉明', to: '中部B2案', flow: 25 },
+    { from: '李佩嘉', to: '北市A1案', flow: 30 },
+    { from: '李佩嘉', to: '海外C3案', flow: 30 },
+    { from: '王大同', to: '中部B2案', flow: 35 },
+    { from: '王大同', to: '中部D4案', flow: 25 },
+    { from: '林小春', to: '中部D4案', flow: 20 },
+    { from: '林小春', to: '海外C3案', flow: 10 },
   ],
 
   // ====== 第五頁：獎金制度 ======
@@ -172,39 +172,39 @@ const MOCK_DATA = {
     {
       id: 'zhang', name: '張曉明', satisfaction: 4.8,
       deals: [
-        { project: '台北中山賦', type: '新案', date: '2026/01/15', amount: 4800, bonus: 144, aging: 0, agingMonths: 0 },
-        { project: '台北中山賦', type: '新案', date: '2026/02/20', amount: 5200, bonus: 156, aging: 0, agingMonths: 0 },
-        { project: '台中雲峰',   type: '舊案', date: '2026/01/28', amount: 3200, bonus: 96,  aging: 2.5, agingMonths: 18 },
-        { project: '成都涵碧天下', type: '新案', date: '2026/03/05', amount: 3800, bonus: 114, aging: 0, agingMonths: 0 },
-        { project: '員林案',     type: '舊案', date: '2026/02/10', amount: 1800, bonus: 54,  aging: 3.2, agingMonths: 26 },
+        { project: '北市A1案', type: '新案', date: '2026/01/15', amount: 4800, bonus: 144, aging: 0, agingMonths: 0 },
+        { project: '北市A1案', type: '新案', date: '2026/02/20', amount: 5200, bonus: 156, aging: 0, agingMonths: 0 },
+        { project: '中部B2案',   type: '舊案', date: '2026/01/28', amount: 3200, bonus: 96,  aging: 2.5, agingMonths: 18 },
+        { project: '海外C3案', type: '新案', date: '2026/03/05', amount: 3800, bonus: 114, aging: 0, agingMonths: 0 },
+        { project: '中部D4案',     type: '舊案', date: '2026/02/10', amount: 1800, bonus: 54,  aging: 3.2, agingMonths: 26 },
       ],
     },
     {
       id: 'li', name: '李佩嘉', satisfaction: 4.9,
       deals: [
-        { project: '台北中山賦', type: '新案', date: '2026/01/20', amount: 5100, bonus: 153, aging: 0, agingMonths: 0 },
-        { project: '成都涵碧天下', type: '新案', date: '2026/02/15', amount: 4200, bonus: 126, aging: 0, agingMonths: 0 },
-        { project: '台中雲峰',   type: '舊案', date: '2026/03/01', amount: 2800, bonus: 84,  aging: 1.8, agingMonths: 10 },
-        { project: '台北中山賦', type: '新案', date: '2026/03/08', amount: 3600, bonus: 108, aging: 0, agingMonths: 0 },
+        { project: '北市A1案', type: '新案', date: '2026/01/20', amount: 5100, bonus: 153, aging: 0, agingMonths: 0 },
+        { project: '海外C3案', type: '新案', date: '2026/02/15', amount: 4200, bonus: 126, aging: 0, agingMonths: 0 },
+        { project: '中部B2案',   type: '舊案', date: '2026/03/01', amount: 2800, bonus: 84,  aging: 1.8, agingMonths: 10 },
+        { project: '北市A1案', type: '新案', date: '2026/03/08', amount: 3600, bonus: 108, aging: 0, agingMonths: 0 },
       ],
     },
     {
       id: 'wang', name: '王大同', satisfaction: 4.5,
       deals: [
-        { project: '台中雲峰',   type: '新案', date: '2026/01/10', amount: 3500, bonus: 105, aging: 0, agingMonths: 0 },
-        { project: '員林案',     type: '舊案', date: '2026/01/25', amount: 2200, bonus: 66,  aging: 3.5, agingMonths: 30 },
-        { project: '台中雲峰',   type: '新案', date: '2026/02/18', amount: 4100, bonus: 123, aging: 0, agingMonths: 0 },
-        { project: '員林案',     type: '舊案', date: '2026/03/02', amount: 1600, bonus: 48,  aging: 4.1, agingMonths: 38 },
-        { project: '成都涵碧天下', type: '新案', date: '2026/03/09', amount: 2800, bonus: 84,  aging: 0, agingMonths: 0 },
+        { project: '中部B2案',   type: '新案', date: '2026/01/10', amount: 3500, bonus: 105, aging: 0, agingMonths: 0 },
+        { project: '中部D4案',     type: '舊案', date: '2026/01/25', amount: 2200, bonus: 66,  aging: 3.5, agingMonths: 30 },
+        { project: '中部B2案',   type: '新案', date: '2026/02/18', amount: 4100, bonus: 123, aging: 0, agingMonths: 0 },
+        { project: '中部D4案',     type: '舊案', date: '2026/03/02', amount: 1600, bonus: 48,  aging: 4.1, agingMonths: 38 },
+        { project: '海外C3案', type: '新案', date: '2026/03/09', amount: 2800, bonus: 84,  aging: 0, agingMonths: 0 },
       ],
     },
     {
       id: 'lin', name: '林小春', satisfaction: 4.7,
       deals: [
-        { project: '員林案',     type: '舊案', date: '2026/01/12', amount: 1900, bonus: 57,  aging: 3.8, agingMonths: 34 },
-        { project: '成都涵碧天下', type: '新案', date: '2026/02/05', amount: 3200, bonus: 96,  aging: 0, agingMonths: 0 },
-        { project: '員林案',     type: '舊案', date: '2026/02/22', amount: 1500, bonus: 45,  aging: 4.0, agingMonths: 36 },
-        { project: '台中雲峰',   type: '新案', date: '2026/03/06', amount: 2900, bonus: 87,  aging: 0, agingMonths: 0 },
+        { project: '中部D4案',     type: '舊案', date: '2026/01/12', amount: 1900, bonus: 57,  aging: 3.8, agingMonths: 34 },
+        { project: '海外C3案', type: '新案', date: '2026/02/05', amount: 3200, bonus: 96,  aging: 0, agingMonths: 0 },
+        { project: '中部D4案',     type: '舊案', date: '2026/02/22', amount: 1500, bonus: 45,  aging: 4.0, agingMonths: 36 },
+        { project: '中部B2案',   type: '新案', date: '2026/03/06', amount: 2900, bonus: 87,  aging: 0, agingMonths: 0 },
       ],
     },
   ],

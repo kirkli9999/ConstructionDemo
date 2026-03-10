@@ -372,8 +372,8 @@ var SANKEY_COLORS = {
   '設計部': '#6366f1', '工程部': '#2563eb', '行銷部': '#0ea5e9', '管理部': '#8b5cf6',
   '北區': '#1e3a8a', '中區': '#1d4ed8', '海外': '#0369a1',
   '高端住宅': '#059669', '飯店住宅': '#10b981', '一般住宅': '#34d399', '複合式開發': '#6ee7b7', '商辦': '#a7f3d0',
-  '台北中山賦': '#f59e0b', '台中雲峰': '#f97316', '成都涵碧天下': '#ef4444', '員林案': '#ec4899',
-  '台北信義案(規劃中)': '#d946ef',
+  '北市A1案': '#f59e0b', '中部B2案': '#f97316', '海外C3案': '#ef4444', '中部D4案': '#ec4899',
+  '北市E5案(規劃中)': '#d946ef',
 };
 
 function renderCostSankeyChart() {
@@ -392,8 +392,8 @@ function renderCostSankeyChart() {
         colorTo: function (c) { return SANKEY_COLORS[c.dataset.data[c.dataIndex].to] || '#94a3b8'; },
         colorMode: 'gradient',
         labels: {
-          '成都涵碧天下': '涵碧天下',
-          '台北信義案(規劃中)': '信義案(規劃)',
+          '海外C3案': 'C3案',
+          '北市E5案(規劃中)': 'E5案(規劃)',
         },
         borderWidth: 0,
         nodeWidth: mobile ? 8 : 12,
@@ -425,7 +425,7 @@ function renderCostSankeyChart() {
 var ASSISTANT_COLORS = {
   '陳美玲(業助)': '#8b5cf6', '林雅婷(業助)': '#a78bfa', '黃淑芬(業助)': '#c4b5fd',
   '張曉明': '#2563eb', '李佩嘉': '#0ea5e9', '王大同': '#06b6d4', '林小春': '#14b8a6',
-  '台北中山賦': '#f59e0b', '台中雲峰': '#f97316', '成都涵碧天下': '#ef4444', '員林案': '#ec4899',
+  '北市A1案': '#f59e0b', '中部B2案': '#f97316', '海外C3案': '#ef4444', '中部D4案': '#ec4899',
 };
 
 // ====== Page 5: Bonus Charts ======
@@ -568,7 +568,7 @@ function renderAssistantSankeyChart() {
           '陳美玲(業助)': '陳美玲',
           '林雅婷(業助)': '林雅婷',
           '黃淑芬(業助)': '黃淑芬',
-          '成都涵碧天下': '涵碧天下',
+          '海外C3案': 'C3案',
         },
         borderWidth: 0,
         nodeWidth: mobile ? 8 : 12,
