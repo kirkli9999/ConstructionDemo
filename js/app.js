@@ -12,7 +12,6 @@
     sales: '業務績效與激勵系統',
     management: '管理課題分析',
     bonus: '獎金制度儀表板',
-    sixcards: '溝通氣場實踐工具',
   };
 
   const STATUS_MAP = {
@@ -72,9 +71,6 @@
           var bSelect = document.getElementById('bonusPersonSelect');
           var bPid = bSelect ? bSelect.value : 'zhang';
           renderBonusPage(bPid);
-          break;
-        case 'sixcards':
-          if (typeof initSixCardsPage === 'function') initSixCardsPage();
           break;
       }
     });
@@ -509,8 +505,6 @@
     initProjectSelect();
     initBonusPersonSelect();
     initBonusSimulator();
-    if (typeof initSixCardsListeners === 'function') initSixCardsListeners();
-
     // Render initial page charts
     renderPageCharts('summary');
 
